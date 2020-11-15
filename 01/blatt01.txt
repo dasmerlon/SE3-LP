@@ -2,7 +2,7 @@ SE3-LP WiSe 2020/2021
 Übung Gr.04:
     Merle Hoffmann  (7031673)
     Lukas Kiefer    (7260745)
-    Björn -------  (-------)
+    Björn -------   (-------)
 
 
 Aufgabenblatt 1:
@@ -167,7 +167,18 @@ false.
 
 
 2.3:
-    Es gibt vier Ports:
+    Es gibt vier Ports: Call, Redo, Exit und Fail
+    Als erste Systemausgabe kommt immer "Call", da dies der Prädikataufruf ist. 
+    Mit "Exit" wird die Prozedur verlassen und ein Resultat wird ausgegeben. 
+    Wenn nach der Resultatausgabe kein Punkt folgt, kann man sich mit einem Semikolon
+    weitere Variablenbindungen ausgeben lassen. Dann folgt die Systemausgabe "Redo",
+    was das Backtracking anzeigt. Dabei wird zum letzten Entscheidungspunkt zurück-
+    gegangen und alle Variablenbindungen, die bisher gemacht wurden, werden 
+    zurückgesetzt. Wird der Prädikataufruf mit einem "Fail" verlassen, konnte kein
+    Berechnungsergebnis (mehr) produziert werden. Der Aufruf ist somit gescheitert
+    und beendet. Er lässt sich nicht mehr per Backtracking erneut betreten.
+    Im Skript werden die Systemausgaben innerhalb des Vier-Port-Modells vorgestellt.
+
 -----------------------------------------------------------------
 ?- trace.
 true.
