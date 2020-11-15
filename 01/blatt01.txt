@@ -2,7 +2,7 @@ SE3-LP WiSe 2020/2021
 Übung Gr.04:
     Merle Hoffmann      (7031673)
     Lukas Kiefer        (7260745)
-    Björn Mutschinski   (-------)
+    Björn Mutschinski   (7029008)
 
 
 Aufgabenblatt 1:
@@ -144,8 +144,11 @@ false.
 h) Hat Otto Kinder?
     - Ja, er hat Kinder.
 ---------------------------------------
-?- \+ \+vater_von(otto,X).
+?- \+ \+vater_von(otto,_).
 true.
+
+?- vater_von(otto,_).
+true 
 ---------------------------------------
 
 
