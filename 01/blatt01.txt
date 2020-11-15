@@ -1,8 +1,8 @@
 SE3-LP WiSe 2020/2021
-Uebung Gr.04:
+Übung Gr.04:
     Merle Hoffmann  (7031673)
     Lukas Kiefer    (7260745)
-    Bjoern -------  (-------)
+    Björn -------  (-------)
 
 
 Aufgabenblatt 1:
@@ -13,15 +13,15 @@ Aufgabe 1:
     Der Punkt kennzeichnet in Prolog das Ende einer Klausel.
     Wenn der Dateiname nicht in Hochkommas gesetzt wird, wird der Punkt in 
     familie.pl als Ende der Klausel interpretiert, weshalb es zur Fehlermeldung 
-    kommt. Der Schraegstrich kennzeichnet in Prolog den Operator fuer die Division.
-    Daher werden auch bei der Pfadangabe Hochkommas benoetigt.
-    Die Hochkommas verhindern, dass der Punkt, bzw. der Schraegstrich falsch 
+    kommt. Der Schrägstrich kennzeichnet in Prolog den Operator für die Division.
+    Daher werden auch bei der Pfadangabe Hochkommas benötigt.
+    Die Hochkommas verhindern, dass der Punkt, bzw. der Schrägstrich falsch 
     interpretiert wird und die Klausel richtig bis zum Ende gelesen werden kann.
 
 
 1.2: 
-    Mit listing(Praedikatsname) erhaelt man alle Daten in der Datenbank zu dem 
-    angegebenen Praedikat. Zudem wird die Stelligkeit des Praedikats am Anfang 
+    Mit listing(Prädikatsname) erhält man alle Daten in der Datenbank zu dem 
+    angegebenen Prädikat. Zudem wird die Stelligkeit des Prädikats am Anfang 
     angezeigt.
 
 ---------------------------------------
@@ -51,12 +51,12 @@ true.
 
 
 1.3:
-    Das Praedikat asserta/1 fuegt die neue Klausel als erste Klausel (also an den 
-    Anfang) hinzu, waehrend das Praedikat assertz/1 die neue Klausel als letzte 
-    Klausel (also ans Ende) hinzufuegt.
-    assert/1 ist ein veraltetes Praedikat, welches durch assertz/1 ersetzt wurde.
-    Wenn eine Klausel hinzugefuegt wird, welche bereits existiert, wird sie dennoch
-    hinzugefuegt, sodass sie beim Aufruf mit listing/1 mehrfach aufgefuehrt wird.
+    Das Prädikat asserta/1 fügt die neue Klausel als erste Klausel (also an den 
+    Anfang) hinzu, während das Prädikat assertz/1 die neue Klausel als letzte 
+    Klausel (also ans Ende) hinzufügt.
+    assert/1 ist ein veraltetes Prädikat, welches durch assertz/1 ersetzt wurde.
+    Wenn eine Klausel hinzugefügt wird, welche bereits existiert, wird sie dennoch
+    hinzugefügt, sodass sie beim Aufruf mit listing/1 mehrfach aufgeführt wird.
 
 
 
@@ -70,7 +70,7 @@ true.
 ---------------------------------------
 
 
-b)  Heisst die Mutter von Hans Julia?
+b)  Heißt die Mutter von Hans Julia?
     - Nein.
 ---------------------------------------
     ?- mutter_von(julia, hans).
@@ -78,7 +78,7 @@ b)  Heisst die Mutter von Hans Julia?
 ---------------------------------------
 
 
-c)  Wie heisst der Vater von Helga?
+c)  Wie heißt der Vater von Helga?
     - Otto.
 ---------------------------------------
     ?- vater_von(X, helga).
@@ -86,7 +86,7 @@ c)  Wie heisst der Vater von Helga?
 ---------------------------------------
 
 
-d)  Wie heisst der Vater von Julia?
+d)  Wie heißt der Vater von Julia?
     - Julia hat keinen Vater, bzw. es gibt keinen Eintrag mit Julia als Kind.
 ---------------------------------------
     ?- vater_von(X, julia).
