@@ -1,8 +1,8 @@
 SE3-LP WiSe 2020/2021
 Übung Gr.04:
-    Merle Hoffmann  (7031673)
-    Lukas Kiefer    (7260745)
-    Björn -------   (-------)
+    Merle Hoffmann      (7031673)
+    Lukas Kiefer        (7260745)
+    Björn Mutschinski   (-------)
 
 
 Aufgabenblatt 1:
