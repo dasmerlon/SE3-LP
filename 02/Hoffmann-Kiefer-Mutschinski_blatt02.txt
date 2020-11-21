@@ -1,0 +1,85 @@
+SE3-LP WiSe 2020/2021
+Übung Gr.04:
+    Merle Hoffmann      (7031673)
+    Lukas Kiefer        (7260745)
+    Björn Mutschinski   (7029008)
+
+
+Aufgabenblatt 2:
+
+
+Aufgabe 1: 
+1.1:    ?- mutter_von(X,P1),mutter_von(X,P2),P1\=P2.
+
+    Die Anfrage gibt eine Mutter (X) und zwei ihrer Kinder (P1,P2) aus, wobei die 
+    Kinder unterschiedliche Personen sind. Mütter mit weniger als 2 Kinder werden 
+    nicht ausgegeben. Es gibt dabei mehrere Ausgaben der gleichen Mutter und Kinder,
+    da alle möglichen Verbindungen der Variablen und Kinder ausgegeben wird.
+    P1 und P2 sind dabei entweder Geschwister oder Halbgeschwister mit gleicher 
+    Mutter, aber unterschiedlichem Vater.
+
+    Anfrage mit sinvollen Bezeichnern:
+        ?- mutter_von(Mutter,Kind1),mutter_von(Mutter,Kind2),Kind1\=Kind2.
+-----------------------------------------------------------------
+?- mutter_von(Mutter,Kind1),mutter_von(Mutter,Kind2),Kind1\=Kind2.
+Mutter = marie,
+Kind1 = hans,
+Kind2 = helga ;
+Mutter = marie,
+Kind1 = helga,
+Kind2 = hans ;
+Mutter = barbara,
+Kind1 = klaus,
+Kind2 = andrea ;
+Mutter = barbara,
+Kind1 = andrea,
+Kind2 = klaus ;
+Mutter = charlotte,
+Kind1 = barbara,
+Kind2 = magdalena ;
+Mutter = charlotte,
+Kind1 = magdalena,
+Kind2 = barbara ;
+false.
+-----------------------------------------------------------------
+
+
+1.2:    ?- mutter_von(P1,X),vater_von(X,P2),P1\=P2.
+
+    Die Anfrage gibt eine Mutter (P1), ihren Sohn (X) und dessen Kind (P2) aus, 
+    wobei die Mutter und das Kind des Sohnes (logischerweise) unterschiedliche 
+    Personen sind. Mütter ohne Sohn oder deren Söhne keine Kinder haben, werden 
+    nicht ausgegeben. P1 und P2 sind dabei Oma und Enkelkind.
+
+    Anfrage mit sinvollen Bezeichnern:
+        ?- mutter_von(Oma,Vater),vater_von(Vater,Kind),Oma\=Kind.
+-----------------------------------------------------------------
+?-  mutter_von(Oma,Vater),vater_von(Vater,Kind),Oma\=Kind.
+Oma = julia,
+Vater = otto,
+Kind = hans ;
+Oma = julia,
+Vater = otto,
+Kind = helga ;
+false.
+-----------------------------------------------------------------
+
+
+1.3:    ?- vater_von(X,P1),mutter_von(Y,X),mutter_von(Y,Z),mutter_von(Z,P2),X\=Z.
+
+    Die Anfrage gibt eine Mutter (Y), ihren Sohn (X), ihre Tochter (Z) und 
+    dessen Kinder (P1,P2) aus. Der Sohn und die Tochter sind unterschiedliche 
+    Personen. P1 und P2 sind dabei Cousins bzw. Cousinen, wobei sie für den einen 
+    väterlicherseits und für den anderen mütterlicherseits verwand sind.	
+
+    Anfrage mit sinvollen Bezeichnern:
+        ?- vater_von(Vater,Kind1),mutter_von(Oma,Vater),mutter_von(Oma,Mutter),
+            mutter_von(Mutter,Kind2),Vater\=Mutter.
+-----------------------------------------------------------------
+?- vater_von(Vater,Kind1),mutter_von(Oma,Vater),mutter_von(Oma,Mutter),
+|                mutter_von(Mutter,Kind2),Vater\=Mutter.
+false.
+-----------------------------------------------------------------
+
+
+
