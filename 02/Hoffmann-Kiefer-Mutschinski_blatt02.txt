@@ -77,9 +77,142 @@ false.
             mutter_von(Mutter,Kind2),Vater\=Mutter.
 -----------------------------------------------------------------
 ?- vater_von(Vater,Kind1),mutter_von(Oma,Vater),mutter_von(Oma,Mutter),
-|                mutter_von(Mutter,Kind2),Vater\=Mutter.
+|    mutter_von(Mutter,Kind2),Vater\=Mutter.
 false.
 -----------------------------------------------------------------
 
 
+
+Aufgabe 2: 
+2.1:    Welche Bücher sind bereits seit mehr als vier Jahren im Angebot?
+
+    Wir sind bei der Aufgabe davon ausgegangen, dass mit "Bücher" ausschließlich
+    Produkte der Kategorie "buch" gemeint sind. Da das Buch *mehr* als vier Jahre
+    im Angebot sein soll, muss das Erscheinungsjahr *vor* 2016 sein.
+-----------------------------------------------------------------
+?- produkt(_,buch,Titel,Autor,Verlag,Erscheinungsjahr,_), Erscheinungsjahr<2016.
+Titel = sonnenuntergang,
+Autor = hoffmann_susanne,
+Verlag = meister,
+Erscheinungsjahr = 2010 ;
+Titel = winterzeit,
+Autor = wolf_michael,
+Verlag = meister,
+Erscheinungsjahr = 2011 ;
+Titel = winterzeit,
+Autor = wolf_michael,
+Verlag = meister,
+Erscheinungsjahr = 2015.
+-----------------------------------------------------------------
+
+
+2.2:    Von welchen Büchern wurden 2016 mehr Exemplare verkauft, als 2017?
+    
+    Mit der folgenden Anfrage werden nur Bücher ausgegeben, die auch in der
+    Datenbank einen Verkaufseintrag für beide Jahre haben. Wenn im Jahr 2016 
+    verkauft wurde, aber es keinen Eintrag für 2017 gibt, dann wird dieses Buch 
+    nicht ausgegeben.
+-----------------------------------------------------------------
+?- produkt(ID,buch,Titel,Autor,Verlag,Erscheinungsjahr,_), 
+|    verkauft(ID,2016,_,Verkauft16), verkauft(ID,2017,_,Verkauft17), 
+|    Verkauft16>Verkauft17.
+ID = 12345,
+Titel = sonnenuntergang,
+Autor = hoffmann_susanne,
+Verlag = meister,
+Erscheinungsjahr = 2010,
+Verkauft16 = 350,
+Verkauft17 = 168 ;
+ID = 12347,
+Titel = winterzeit,
+Autor = wolf_michael,
+Verlag = meister,
+Erscheinungsjahr = 2011,
+Verkauft16 = 9,
+Verkauft17 = 8 ;
+ID = 12349,
+Titel = winterzeit,
+Autor = wolf_michael,
+Verlag = meister,
+Erscheinungsjahr = 2015,
+Verkauft16 = 257,
+Verkauft17 = 12.
+-----------------------------------------------------------------
+
+    Eine alternative Anfrage, die diesen Fall berücksichtigt, sieht wiefolgt aus:
+    Wenn es keinen Eintrag für den Verkauf von 2017 gibt, wird geprüft, ob in 2016
+    mehr als 0 Exemplare verkauft wurden. Wenn das der Fall ist, wird das Buch
+    ausgegeben, allerdings fehlt dann eine Variablenzuordnung für "Verkauft17".
+    Da es in medien.pl diesen Fall nicht gibt, verändert sich die Ausgabe auch 
+    nicht. Man kann die Anfrage aber testen, indem man einen Verkaufseintrag von 
+    2017 eines dieser Bücher auskommentiert.
+-----------------------------------------------------------------
+?- produkt(ID,buch,Titel,Autor,Verlag,Erscheinungsjahr,_), 
+|    verkauft(ID,2016,_,Verkauft16),
+|    ((verkauft(ID,2017,_,Verkauft17), Verkauft16>Verkauft17);
+|    (\+verkauft(ID,2017,_,_), Verkauft16>0)).
+ID = 12345,
+Titel = sonnenuntergang,
+Autor = hoffmann_susanne,
+Verlag = meister,
+Erscheinungsjahr = 2010,
+Verkauft16 = 350,
+Verkauft17 = 168 ;
+ID = 12347,
+Titel = winterzeit,
+Autor = wolf_michael,
+Verlag = meister,
+Erscheinungsjahr = 2011,
+Verkauft16 = 9,
+Verkauft17 = 8 ;
+ID = 12349,
+Titel = winterzeit,
+Autor = wolf_michael,
+Verlag = meister,
+Erscheinungsjahr = 2015,
+Verkauft16 = 257,
+Verkauft17 = 12 ;
+false.
+-----------------------------------------------------------------
+
+
+2.3:    Welche Bücher werden auch als E-Buch angeboten?
+
+    Es reicht nicht nur die E-Bücher auszugeben, da es auch E-Bücher geben kann, 
+    die nicht als Buch angeboten werden. Wenn das Erscheinungsjahr vom Buch und 
+    E-Buch unterschiedlich ist, könnte es sich um eine andere Auflage handeln.
+    Daher haben wir auch das Erscheinungsjahr mit angegeben, sodass nur die Bücher
+    angegeben werden, die es auch in gleicher Version als E-Buch gibt.
+    (Wenn man das Erscheinungsjahr ignoriert, gibt es 2 Ergebnisse.)
+-----------------------------------------------------------------
+?- produkt(_,buch,Titel,Autor,Verlag,Erscheinungsjahr,_), 
+|    produkt(_,ebuch,Titel,Autor,Verlag,Erscheinungsjahr,_).
+Titel = blutrache,
+Autor = wolf_michael,
+Verlag = meister,
+Erscheinungsjahr = 2020 ;
+false.
+-----------------------------------------------------------------
+
+
+2.4:    Von welchem Buch wurden im Jahre 2012 die meisten Exemplare verkauft?
+
+    Wir ermitteln den maximalen Wert der Verkaufszahlen in 2012, indem wir mit dem
+    "not"-Prädikat für jeden Datenbankeintrag testen, ob es keinen höheren Wert 
+    gibt. Wenn der innere Teil des "not"-Aufrufs true ausgibt, bedeutet das, dass
+    es einen anderen Eintrag gibt, dessen Verkaufszahl größer ist und der Aufruf 
+    scheitert. Wenn es stattdessen keine höhere Verkaufszahl oder kein weiterer 
+    Verkaufseintrag von 2012 mehr gibt, gibt der innere Teil des "not"-Prädikats-
+    aufrufs false aus. Durch das negieren, wird er dementsprechend true und das
+    Ergebniss mit der höchsten Verkaufszahl wird ausgegeben.
+-----------------------------------------------------------------
+?- verkauft(ID,2012,_,Verkauft), \+ (verkauft(ID2,2012,_,Verkauft2),
+|    Verkauft<Verkauft2),produkt(ID,buch,Titel,Autor,Verlag,Erscheinungsjahr,_).
+ID = 12347,
+Verkauft1 = 23,
+Titel = winterzeit,
+Autor = wolf_michael,
+Verlag = meister,
+Erscheinungsjahr = 2011.
+-----------------------------------------------------------------
 
