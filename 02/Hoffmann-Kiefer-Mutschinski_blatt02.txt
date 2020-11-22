@@ -216,3 +216,75 @@ Verlag = meister,
 Erscheinungsjahr = 2011.
 -----------------------------------------------------------------
 
+
+Aufgabe 3: 
+3.1:
+    Wir haben ein Datenbankschema für eine Schule entworfen mit folgenden Prädikaten:
+    - schueler(SchuelerId,KlassenId,Name,Geburtstag,Adresse,Ort).
+    - klasse(KlassenId,LehrerId,Klasse,Stufe,Raum).
+    - lehrer(LehrerId,Name,Adresse,Ort).
+    - veranstaltung(FachId,LehrerId,Fach,Raum,Zeit).
+    - note(SchuelerId,FachId,Note).
+    
+
+3.2:
+
+
+3.3:
+    Siehe "schueler.pl".
+
+a)  Welche Lehrer leiten keine Klasse?
+-----------------------------------------------------------------
+?- lehrer(ID,Lehrer,_,_), \+klasse(_,ID,_,_).
+ID = 34569,
+Lehrer = woehler_annegret ;
+ID = 34570,
+Lehrer = baumgartner_klaus ;
+false.
+-----------------------------------------------------------------
+
+
+b)  Welche Schueler haben in Mathe eine 3 und in welche Klasse gehen sie?
+-----------------------------------------------------------------
+?- note(SId,mathe,3),schueler(SId,KId,Name,_,_,_),klasse(KId,_,Klasse,_).
+SId = 12345,
+KId = 23456,
+Name = bader_laura,
+Klasse = '2a' ;
+SId = 12346,
+KId = 23458,
+Name = loose_frieda,
+Klasse = '4b'.
+-----------------------------------------------------------------
+
+c)  Wann, wo und bei wem findet Deutsch statt?
+-----------------------------------------------------------------
+?- veranstaltung(_,ID,deutsch,Raum,Tag,Start,Ende),lehrer(ID,Lehrer,_,_).
+ID = 34570,
+Raum = 12,
+Tag = freitag,
+Start = 10:15,
+Ende = 11:45,
+Lehrer = baumgartner_klaus ;
+ID = 34568,
+Raum = 21,
+Tag = donnerstag,
+Start = 8:15,
+Ende = 9:45,
+Lehrer = erber_jens.
+-----------------------------------------------------------------
+
+d)  Welche Schüler sind in einer gemeinsamen Klasse?
+-----------------------------------------------------------------
+?- klasse(ID,_,Klasse,_),findall(Name,schueler(_,ID,Name,_,_,_),Klassenliste).
+ID = 23456,
+Klasse = '2a',
+Klassenliste = [bader_laura, landsmann_sebastian] ;
+ID = 23457,
+Klasse = '3c',
+Klassenliste = [urchs_jan-philipp, hermes_franziska] ;
+ID = 23458,
+Klasse = '4b',
+Klassenliste = [loose_frieda, baake_jacob].
+-----------------------------------------------------------------
+
