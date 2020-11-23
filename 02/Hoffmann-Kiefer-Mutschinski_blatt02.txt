@@ -48,8 +48,9 @@ false.
 
     Die Anfrage gibt eine Mutter (P1), ihren Sohn (X) und dessen Kind (P2) aus, 
     wobei die Mutter und das Kind des Sohnes (logischerweise) unterschiedliche 
-    Personen sind. Mütter ohne Sohn oder deren Söhne keine Kinder haben, werden 
-    nicht ausgegeben. P1 und P2 sind dabei Oma und Enkelkind.
+    Personen sind, bzw. unterschiedliche Namen haben. Mütter ohne Sohn oder deren 
+    Söhne keine Kinder haben, werden nicht ausgegeben. P1 und P2 sind dabei Oma 
+    und Enkelkind.
 
     Anfrage mit sinvollen Bezeichnern:
         ?- mutter_von(Oma,Vater),vater_von(Vater,Kind),Oma\=Kind.
@@ -217,6 +218,7 @@ Erscheinungsjahr = 2011.
 -----------------------------------------------------------------
 
 
+
 Aufgabe 3: 
 3.1:
     Wir haben ein Datenbankschema für eine Schule entworfen mit folgenden Prädikaten:
@@ -228,6 +230,20 @@ Aufgabe 3:
     
 
 3.2:
+    Das Datenbankschema an sich ist eine Abstraktion einer Schule und dessen Abläufe
+    und Beteiligten. Dabei gibt es eine Abstraktion von irrelevanten Aspekten, indem
+    wir in unserem Datenbankschema zum Beispiel Urlaubstage der Lehrer oder Eltern
+    der Schüler, etc. ignorieren, bzw. nicht einbeziehen. Auch lassen wir zur
+    Vereinfachung weg, welche Veranstaltung für welche Jahrgänge gedacht sind.
+    
+    Eine Abstraktion durch Generalisierung sieht man zum Beispiel an der Beziehung 
+    von Schülern und Klassenlehrern. Statt einer Zuordnung von Schüler und Lehrer,
+    sind sie durch die gemeinsame Klasse miteinander verbunden.
+
+    Außerdem enthält das Datenbankschema Abstraktionen durch Vergröberung. 
+    Sonderfälle, wie Schulferien oder Ausfall werden weggelassen, sodass laut 
+    unserem Datenbankschema jede Veranstaltung jede Woche stattfindet.
+    Zudem sind Maßeinheiten, wie die Raumnummer oder die Uhrzeit Abstraktionen.
 
 
 3.3:
@@ -257,6 +273,7 @@ Name = loose_frieda,
 Klasse = '4b'.
 -----------------------------------------------------------------
 
+
 c)  Wann, wo und bei wem findet Deutsch statt?
 -----------------------------------------------------------------
 ?- veranstaltung(_,ID,deutsch,Raum,Tag,Start,Ende),lehrer(ID,Lehrer,_,_).
@@ -273,6 +290,7 @@ Start = 8:15,
 Ende = 9:45,
 Lehrer = erber_jens.
 -----------------------------------------------------------------
+
 
 d)  Welche Schüler sind in einer gemeinsamen Klasse?
 -----------------------------------------------------------------
