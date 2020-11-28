@@ -10,14 +10,14 @@ Aufgabenblatt 3:
 
 Aufgabe 1: 
 1.1:    
-    %aktueller_preis_von(+,+,+,?Erscheinungsjahr,?Kategorie,-)
+    %aktueller_preis_von(+Titel,+Autor,+Verlag,?Erscheinungsjahr,?Kategorie,-Preis)
     aktueller_preis_von(Titel,Autor,Verlag,Erscheinungsjahr,Kategorie,Preis) :-
         produkt(ID,Kategorie,Titel,Autor,Verlag,Erscheinungsjahr,_),
         verkauft(ID,2020,Preis,_).
 
 Testanfragen: (auskommentierte Einträge in medien.pl wurden hinzugefügt)
 -----------------------------------------------------------------
-% (+,+,+,-,-,-)
+% aktueller_preis_von(+,+,+,-,-,-)
 ?- aktueller_preis_von(blutrache,wolf_michael,meister,Erscheinungsjahr,Kategorie,Preis).
 Erscheinungsjahr = 2020,
 Kategorie = buch,
@@ -26,19 +26,19 @@ Erscheinungsjahr = 2020,
 Kategorie = ebuch,
 Preis = 13.
 
-% (+,+,+,+,+,-)
+% aktueller_preis_von(+,+,+,+,+,-)
 ?- aktueller_preis_von(blutrache,wolf_michael,meister,2020,buch,Preis).
 Preis = 17 ;
 false.
 
-% (+,+,+,+,-,-)
+% aktueller_preis_von(+,+,+,+,-,-)
 ?- aktueller_preis_von(blutrache,wolf_michael,meister,2020,Kategorie,Preis).
 Kategorie = buch,
 Preis = 17 ;
 Kategorie = ebuch,
 Preis = 13.
 
-% (+,+,+,-,+,-)
+% aktueller_preis_von(+,+,+,-,+,-)
 ?- aktueller_preis_von(blutrache,wolf_michael,meister,Erscheinungsjahr,buch,Preis).
 Erscheinungsjahr = 2020,
 Preis = 17 ;
@@ -51,7 +51,7 @@ false.
 
 
 1.2:    
-    %zuletzt_angeboten(+,+,+,?Erscheinungsjahr,?Kategorie,-)
+    %zuletzt_angeboten(+Titel,+Autor,+Verlag,?Erscheinungsjahr,?Kategorie,-LetzterEintrag)
     zuletzt_angeboten(Titel,Autor,Verlag,Erscheinungsjahr,Kategorie,LetzterEintrag) :-
         produkt(ID,Kategorie,Titel,Autor,Verlag,Erscheinungsjahr,_),
         verkauft(ID,LetzterEintrag,_,_), 
@@ -59,7 +59,7 @@ false.
 
 Testanfragen: 
 -----------------------------------------------------------------
-% (+,+,+,-,-,-)
+% zuletzt_angeboten(+,+,+,-,-,-)
 ?- zuletzt_angeboten(sonnenuntergang,hoffmann_susanne,meister,Erscheinungsjahr,Kategorie,LetzterEintrag).
 Erscheinungsjahr = 2010,
 Kategorie = buch,
@@ -68,18 +68,18 @@ Erscheinungsjahr = 2017,
 Kategorie = ebuch,
 LetzterEintrag = 2019.
 
-% (+,+,+,+,+,-)
+% zuletzt_angeboten(+,+,+,+,+,-)
 ?- zuletzt_angeboten(sonnenuntergang,hoffmann_susanne,meister,2010,buch,LetzterEintrag).
 LetzterEintrag = 2019 ;
 false.
 
-% (+,+,+,+,-,-)
+% zuletzt_angeboten(+,+,+,+,-,-)
 ?- zuletzt_angeboten(sonnenuntergang,hoffmann_susanne,meister,2010,Kategorie,LetzterEintrag).
 Kategorie = buch,
 LetzterEintrag = 2019 ;
 false.
 
-% (+,+,+,-,+,-) & (nur ein Verkaufseintrag)
+% zuletzt_angeboten(+,+,+,-,+,-) & (nur ein Verkaufseintrag)
 ?- zuletzt_angeboten(blutrache,wolf_michael,meister,Erscheinungsjahr,buch,LetzterEintrag).
 Erscheinungsjahr = LetzterEintrag, LetzterEintrag = 2020 ;
 false.
@@ -93,12 +93,159 @@ false.
 
 Aufgabe 2: 
 2.1:    
+    %mehrfache_kategorien(-Kategorien)
+    mehrfache_kategorien(Kategorien) :-
+        findall(Name,
+        (kategorie(ID1,Name,_),kategorie(ID2,Name,_), ID1\==ID2),
+        AlleKategorien), 
+        list_to_set(AlleKategorien,Kategorien).
+
+Testanfragen: 
+-----------------------------------------------------------------
+% mehrfache_kategorien(-)
+?- mehrfache_kategorien(X).
+X = [kinder, krimi, roman, sachbuch, lyrik].
+
+% "kategorie(22,buch,0)." zu medien2.pl hinzugefügt
+?- mehrfache_kategorien(X).
+X = [buch, kinder, krimi, roman, sachbuch, lyrik].
+-----------------------------------------------------------------
 
 
 2.2:    
+    %unterste_kategorie(?Schluessel,?Name)
+    unterste_kategorie(Schluessel,Name) :-
+        kategorie(Schluessel,Name,_), 
+        \+ (kategorie(_,_,Oberkategorie), Schluessel==Oberkategorie).
+
+Testanfragen: 
+-----------------------------------------------------------------
+% unterste_kategorie(-,-)
+?- unterste_kategorie(Schluessel,Kategorie).
+Schluessel = 5,
+Kategorie = kinder ;
+Schluessel = 6,
+Kategorie = kinder ;
+Schluessel = 7,
+Kategorie = krimi ;
+Schluessel = 8,
+Kategorie = krimi ;
+Schluessel = 9,
+Kategorie = krimi ;
+Schluessel = 10,
+Kategorie = roman ;
+Schluessel = 11,
+Kategorie = roman ;
+Schluessel = 12,
+Kategorie = roman ;
+Schluessel = 14,
+Kategorie = sachbuch ;
+Schluessel = 15,
+Kategorie = bilderbuch ;
+Schluessel = 16,
+Kategorie = reisefuehrer ;
+Schluessel = 17,
+Kategorie = lexikon ;
+Schluessel = 18,
+Kategorie = lyrik ;
+Schluessel = 19,
+Kategorie = lyrik ;
+Schluessel = 20,
+Kategorie = bastelbuch ;
+Schluessel = 21,
+Kategorie = woerterbuch.
+
+% unterste_kategorie(+,+)
+?- unterste_kategorie(6,kinder).
+true.
+
+% unterste_kategorie(+,-)
+?- unterste_kategorie(9,Kategorie).
+Kategorie = krimi.
+
+% unterste_kategorie(-,+)
+?- unterste_kategorie(Schluessel,roman).
+Schluessel = 10 ;
+Schluessel = 11 ;
+Schluessel = 12.
+
+% Negativ-Beispiel:
+?- unterste_kategorie(4,kinder).
+false.
+-----------------------------------------------------------------
 
 
-2.3:    
+2.3:  
+    %uneindeutige_oberkategorien(-Kategorien)
+    uneindeutige_oberkategorien(Kategorien) :-
+        findall(Unterkategorie, 
+            (kategorie(_,Unterkategorie,OID1), kategorie(_,Unterkategorie,OID2), 
+            OID1\==OID2),Kategorienliste), 
+        list_to_set(Kategorienliste,Kategorien).
+
+Testanfragen: 
+-----------------------------------------------------------------
+% uneindeutige_oberkategorien(-)
+?- uneindeutige_oberkategorien(X).
+X = [kinder, krimi, roman, sachbuch, lyrik].
+
+% "kategorie(22,buch,0)." zu medien2.pl hinzugefügt
+?- uneindeutige_oberkategorien(X).
+X = [kinder, krimi, roman, sachbuch, lyrik].
+
+-----------------------------------------------------------------
+
+
+    Alternative Interpretation: 
+    Ein Knoten ist durch die ID eindeutig definiert.
+
+    %hierarchieverletzung(?ID,?Unterkategorie)
+    hierarchieverletzung(ID, Unterkategorie) :-
+        kategorie(ID,Unterkategorie,OID1), kategorie(ID,_,OID2), 
+        OID1\==OID2.
+
+Testanfragen: 
+-----------------------------------------------------------------
+% hierarchieverletzung(-,-)
+?- hierarchieverletzung(ID,Name).
+false.
+
+% "kategorie(20,bastelbuch,4)." (Duplikat) zu medien2.pl hinzugefügt
+?- hierarchieverletzung(ID,Name).
+false.
+
+% "kategorie(21,woerterbuch,1)." zu medien2.pl hinzugefügt
+?- hierarchieverletzung(ID,Name).
+ID = 21,
+Name = woerterbuch ;
+ID = 21,
+Name = woerterbuch ;
+false.
+
+% "kategorie(21,krimi,1)." zu medien2.pl hinzugefügt
+?- hierarchieverletzung(ID,Name).
+ID = 21,
+Name = woerterbuch ;
+ID = 21,
+Name = krimi ;
+false.
+
+% hierarchieverletzung(+,+)
+?- hierarchieverletzung(21,woerterbuch).
+true ;
+true ;
+false.
+
+% hierarchieverletzung(+,-)
+?- hierarchieverletzung(21,Name).
+Name = woerterbuch ;
+Name = krimi ;
+false.
+
+% hierarchieverletzung(-,+)
+?- hierarchieverletzung(ID,woerterbuch).
+ID = 21.
+-----------------------------------------------------------------
 
 
 
