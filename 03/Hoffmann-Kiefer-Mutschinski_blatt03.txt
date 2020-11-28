@@ -251,10 +251,94 @@ ID = 21.
 
 Aufgabe 3: 
 3.1:
-    
+    %oberkategorie_von(+ID,+Kategorie,?OID,?Oberkategorie)
+    oberkategorie_von(ID,Kategorie,OID,Oberkategorie) :-
+        kategorie(ID,Kategorie,OID), kategorie(OID,Oberkategorie,_).
 
-3.2:
+    oberkategorie_von(UID,Unterkategorie,OID,Oberkategorie) :-
+        kategorie(UID,Unterkategorie,ID), kategorie(ID,Kategorie,_), 
+        oberkategorie_von(ID,Kategorie,OID,Oberkategorie).
+
+Testanfragen: 
+-----------------------------------------------------------------
+% oberkategorie_von(+,+,-,-)
+?- oberkategorie_von(15,bilderbuch,OID,Oberkategorie).
+OID = 4,
+Oberkategorie = kinder ;
+OID = 1,
+Oberkategorie = buch ;
+false.
+
+% oberkategorie_von(+,+,+,+)
+?- oberkategorie_von(15,bilderbuch,1,buch).
+true ;
+false.
+
+% oberkategorie_von(+,+,+,-)
+?- oberkategorie_von(15,bilderbuch,4,Oberkategorie).
+Oberkategorie = kinder ;
+false.
+
+% oberkategorie_von(+,+,-,+)
+?- oberkategorie_von(15,bilderbuch,OID,kinder).
+OID = 4 ;
+false.
+
+% Negativ-Beispiel:
+?- oberkategorie_von(15,bilderbuch,5,kinder).
+false.
+-----------------------------------------------------------------
+
+
+3.2:    
+    %pfad_bis(+ID,+Kategorie,-Pfad)
+    pfad_bis(ID,Kategorie,Pfad) :-
+        findall(Oberkategorie, oberkategorie_von(ID,Kategorie,_,Oberkategorie),
+            UmgekehrterPfad), 
+        reverse(UmgekehrterPfad,Pfad).
+
+
+    Pfad mit einschließlich der gegebenen Kategorie:
+
+    %pfad_bis(+ID,+Kategorie,-Pfad)
+    pfad_bis(ID,Kategorie,Pfad1) :-
+        findall(Oberkategorie, oberkategorie_von(ID,Kategorie,_,Oberkategorie),
+            UmgekehrterPfad), 
+        reverse(UmgekehrterPfad,Pfad),
+        \+ (Pfad==[]), append(Pfad,[Kategorie],Pfad1).
     
+Testanfragen: 
+-----------------------------------------------------------------
+% pfad_bis(+,+,-)
+?- pfad_bis(15,bilderbuch,Pfad).
+Pfad = [buch, kinder, bilderbuch].
+
+% Negativ-Beispiel:
+?- pfad_bis(12,bilderbuch,Pfad).
+false.
+-----------------------------------------------------------------
+
 
 3.3:
     
+% produkt(PId,KId,Titel,Autor,Verlag,Jahr,Lagerbestand).
+
+    %Hilfsprädikat:
+    %unterkategorie_von(?ID,+Kategorie,?UID,?Unterkategorie)
+    unterkategorie_von(ID,Kategorie,UID,Unterkategorie) :-
+        kategorie(ID,Kategorie,_), kategorie(UID,Unterkategorie,ID).
+    unterkategorie_von(OID,Oberkategorie,UID,Unterkategorie) :-
+        kategorie(OID,Oberkategorie,_), kategorie(ID,Kategorie,OID),
+        unterkategorie_von(ID,Kategorie,UID,Unterkategorie).
+
+    %produkte_der_kategorie(+Kategorie,-Produktliste)
+    produkte_der_kategorie(Kategorie,Produktliste) :-
+        findall([Titel,Autor,Verlag,Jahr],
+        (kategorie(ID,Kategorie,_),
+        produkt(_,ID,Titel,Autor,Verlag,Jahr,_)), Liste1),
+        findall([Titel,Autor,Verlag,Jahr],
+        (unterkategorie_von(ID,Kategorie,UID,_),
+        produkt(_,UID,Titel,Autor,Verlag,Jahr,_)), Liste2),
+        append(Liste1,Liste2,Produktliste).
+
+
