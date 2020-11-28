@@ -1,0 +1,113 @@
+SE3-LP WiSe 2020/2021
+Übung Gr.04:
+    Merle Hoffmann      (7031673)
+    Lukas Kiefer        (7260745)
+    Björn Mutschinski   (7029008)
+
+
+Aufgabenblatt 3:
+
+
+Aufgabe 1: 
+1.1:    
+    %aktueller_preis_von(+,+,+,?Erscheinungsjahr,?Kategorie,-)
+    aktueller_preis_von(Titel,Autor,Verlag,Erscheinungsjahr,Kategorie,Preis) :-
+        produkt(ID,Kategorie,Titel,Autor,Verlag,Erscheinungsjahr,_),
+        verkauft(ID,2020,Preis,_).
+
+Testanfragen: (auskommentierte Einträge in medien.pl wurden hinzugefügt)
+-----------------------------------------------------------------
+% (+,+,+,-,-,-)
+?- aktueller_preis_von(blutrache,wolf_michael,meister,Erscheinungsjahr,Kategorie,Preis).
+Erscheinungsjahr = 2020,
+Kategorie = buch,
+Preis = 17 ;
+Erscheinungsjahr = 2020,
+Kategorie = ebuch,
+Preis = 13.
+
+% (+,+,+,+,+,-)
+?- aktueller_preis_von(blutrache,wolf_michael,meister,2020,buch,Preis).
+Preis = 17 ;
+false.
+
+% (+,+,+,+,-,-)
+?- aktueller_preis_von(blutrache,wolf_michael,meister,2020,Kategorie,Preis).
+Kategorie = buch,
+Preis = 17 ;
+Kategorie = ebuch,
+Preis = 13.
+
+% (+,+,+,-,+,-)
+?- aktueller_preis_von(blutrache,wolf_michael,meister,Erscheinungsjahr,buch,Preis).
+Erscheinungsjahr = 2020,
+Preis = 17 ;
+false.
+
+% Negativ-Beispiel (kein Verkaufseintrag für 2020):
+?- aktueller_preis_von(sonnenuntergang,hoffmann_susanne,meister,Erscheinungsjahr,Kategorie,Preis).
+false.
+-----------------------------------------------------------------
+
+
+1.2:    
+    %zuletzt_angeboten(+,+,+,?Erscheinungsjahr,?Kategorie,-)
+    zuletzt_angeboten(Titel,Autor,Verlag,Erscheinungsjahr,Kategorie,LetzterEintrag) :-
+        produkt(ID,Kategorie,Titel,Autor,Verlag,Erscheinungsjahr,_),
+        verkauft(ID,LetzterEintrag,_,_), 
+        \+ (verkauft(ID,Eintrag,_,_), Eintrag>LetzterEintrag).
+
+Testanfragen: 
+-----------------------------------------------------------------
+% (+,+,+,-,-,-)
+?- zuletzt_angeboten(sonnenuntergang,hoffmann_susanne,meister,Erscheinungsjahr,Kategorie,LetzterEintrag).
+Erscheinungsjahr = 2010,
+Kategorie = buch,
+LetzterEintrag = 2019 ;
+Erscheinungsjahr = 2017,
+Kategorie = ebuch,
+LetzterEintrag = 2019.
+
+% (+,+,+,+,+,-)
+?- zuletzt_angeboten(sonnenuntergang,hoffmann_susanne,meister,2010,buch,LetzterEintrag).
+LetzterEintrag = 2019 ;
+false.
+
+% (+,+,+,+,-,-)
+?- zuletzt_angeboten(sonnenuntergang,hoffmann_susanne,meister,2010,Kategorie,LetzterEintrag).
+Kategorie = buch,
+LetzterEintrag = 2019 ;
+false.
+
+% (+,+,+,-,+,-) & (nur ein Verkaufseintrag)
+?- zuletzt_angeboten(blutrache,wolf_michael,meister,Erscheinungsjahr,buch,LetzterEintrag).
+Erscheinungsjahr = LetzterEintrag, LetzterEintrag = 2020 ;
+false.
+
+% Negativ-Beispiel:
+?- zuletzt_angeboten(falscherTitel,hoffmann_susanne,meister,2010,buch,LetzterEintrag).
+false.
+-----------------------------------------------------------------
+
+
+
+Aufgabe 2: 
+2.1:    
+
+
+2.2:    
+
+
+2.3:    
+
+
+
+Aufgabe 3: 
+3.1:
+    
+
+3.2:
+    
+
+3.3:
+    
