@@ -10,15 +10,33 @@ Aufgabenblatt 3:
 
 Aufgabe 1: 
 1.1:    
-    %aktueller_preis_von(+Titel,+Autor,+Verlag,?Erscheinungsjahr,?Kategorie,-Preis)
-    aktueller_preis_von(Titel,Autor,Verlag,Erscheinungsjahr,Kategorie,Preis) :-
-        produkt(ID,Kategorie,Titel,Autor,Verlag,Erscheinungsjahr,_),
-        verkauft(ID,2020,Preis,_).
+    Das Prädikat "aktueller_preis_von" gibt den Preis von 2020 für das angegebene 
+    Produkt zurück. Wenn das Produkt nicht eindeutig beschrieben wird, werden zu den
+    alternativen Produkten auch alternative Preise erzeugt. Wenn es für ein Produkt 
+    keinen Verkaufseintrag von 2020 existiert, failed die Anfrage.
+
+    Rein theoretisch ist jede beliebige Instanziierungsvariante möglich. 
+    Beispielsweise könnte man jedes Argument uninstanziiert lassen und man würde
+    alle aktuellen Preise aller Produkte erhalten. Die im Kontext sinnvollen 
+    möglichen Instanziierungsvarianten sind allerdings die folgenden:
+
+    Da das Prädikat durch Angaben zu Autor, Titel und Verlag charakterisiert sein
+    soll, müssen diese immer instanziiert werden. Das Prädikat soll den Preis 
+    ermitteln, daher darf dieser nicht instanziiert sein. Das Erscheinungsjahr
+    und die Kategorie dürfen dagegen Eingabe- oder Ausgabeparameter sein. Als 
+    Eingabeparameter beschreiben sie das Produkt eindeutig, als Ausgabeparameter
+    erlauben sie alternative Variablenbindungen für den Preis.
+
+%aktueller_preis_von(+Titel,+Autor,+Verlag,?Erscheinungsjahr,?Kategorie,-Preis)
+aktueller_preis_von(Titel,Autor,Verlag,Erscheinungsjahr,Kategorie,Preis) :-
+    produkt(ID,Kategorie,Titel,Autor,Verlag,Erscheinungsjahr,_),
+    verkauft(ID,2020,Preis,_).
 
 Testanfragen: (auskommentierte Einträge in medien.pl wurden hinzugefügt)
 -----------------------------------------------------------------
 % aktueller_preis_von(+,+,+,-,-,-)
-?- aktueller_preis_von(blutrache,wolf_michael,meister,Erscheinungsjahr,Kategorie,Preis).
+?- aktueller_preis_von(blutrache,wolf_michael,meister,Erscheinungsjahr,
+|    Kategorie,Preis).
 Erscheinungsjahr = 2020,
 Kategorie = buch,
 Preis = 17 ;
@@ -45,22 +63,33 @@ Preis = 17 ;
 false.
 
 % Negativ-Beispiel (kein Verkaufseintrag für 2020):
-?- aktueller_preis_von(sonnenuntergang,hoffmann_susanne,meister,Erscheinungsjahr,Kategorie,Preis).
+?- aktueller_preis_von(sonnenuntergang,hoffmann_susanne,meister,Erscheinungsjahr,
+|    Kategorie,Preis).
 false.
 -----------------------------------------------------------------
 
 
-1.2:    
-    %zuletzt_angeboten(+Titel,+Autor,+Verlag,?Erscheinungsjahr,?Kategorie,-LetzterEintrag)
-    zuletzt_angeboten(Titel,Autor,Verlag,Erscheinungsjahr,Kategorie,LetzterEintrag) :-
-        produkt(ID,Kategorie,Titel,Autor,Verlag,Erscheinungsjahr,_),
-        verkauft(ID,LetzterEintrag,_,_), 
-        \+ (verkauft(ID,Eintrag,_,_), Eintrag>LetzterEintrag).
+1.2:   
+    Das Prädikat "zuletzt_angeboten" ermittelt das Jahr des letzten Verkaufseintrags
+    eines Produkts. Wenn es keinen einzigen Verkaufseintrag zu einem Produkt gibt,
+    failed die Anfrage.
+    
+    Das Produkt wird, wie bei Aufgabe 1.1 durch Angaben zu Autor, Titel und Verlag
+    charakterisiert, wobei die Angabe des Erscheinungsjahres und der Kategorie
+    optional ist. Ermittelt wird der letzte Verkaufseintrag, weshalb dieser nicht 
+    instanziiert werden darf.
+
+%zuletzt_angeboten(+Titel,+Autor,+Verlag,?Erscheinungsjahr,?Kategorie,-LetzterEintrag)
+zuletzt_angeboten(Titel,Autor,Verlag,Erscheinungsjahr,Kategorie,LetzterEintrag) :-
+    produkt(ID,Kategorie,Titel,Autor,Verlag,Erscheinungsjahr,_),
+    verkauft(ID,LetzterEintrag,_,_), 
+    \+ (verkauft(ID,Eintrag,_,_), Eintrag>LetzterEintrag).
 
 Testanfragen: 
 -----------------------------------------------------------------
 % zuletzt_angeboten(+,+,+,-,-,-)
-?- zuletzt_angeboten(sonnenuntergang,hoffmann_susanne,meister,Erscheinungsjahr,Kategorie,LetzterEintrag).
+?- zuletzt_angeboten(sonnenuntergang,hoffmann_susanne,meister,Erscheinungsjahr,
+|    Kategorie,LetzterEintrag).
 Erscheinungsjahr = 2010,
 Kategorie = buch,
 LetzterEintrag = 2019 ;
@@ -69,23 +98,26 @@ Kategorie = ebuch,
 LetzterEintrag = 2019.
 
 % zuletzt_angeboten(+,+,+,+,+,-)
-?- zuletzt_angeboten(sonnenuntergang,hoffmann_susanne,meister,2010,buch,LetzterEintrag).
+?- zuletzt_angeboten(sonnenuntergang,hoffmann_susanne,meister,2010,buch,
+|    LetzterEintrag).
 LetzterEintrag = 2019 ;
 false.
 
 % zuletzt_angeboten(+,+,+,+,-,-)
-?- zuletzt_angeboten(sonnenuntergang,hoffmann_susanne,meister,2010,Kategorie,LetzterEintrag).
+?- zuletzt_angeboten(sonnenuntergang,hoffmann_susanne,meister,2010,Kategorie,
+|    LetzterEintrag).
 Kategorie = buch,
 LetzterEintrag = 2019 ;
 false.
 
 % zuletzt_angeboten(+,+,+,-,+,-) & (nur ein Verkaufseintrag)
-?- zuletzt_angeboten(blutrache,wolf_michael,meister,Erscheinungsjahr,buch,LetzterEintrag).
+?- zuletzt_angeboten(blutrache,wolf_michael,meister,Erscheinungsjahr,buch,
+|    LetzterEintrag).
 Erscheinungsjahr = LetzterEintrag, LetzterEintrag = 2020 ;
 false.
 
-% Negativ-Beispiel:
-?- zuletzt_angeboten(falscherTitel,hoffmann_susanne,meister,2010,buch,LetzterEintrag).
+% Negativ-Beispiel: (kein Verkaufseintrag)
+?- zuletzt_angeboten(falscherTitel,falscherName,meister,2010,buch,LetzterEintrag).
 false.
 -----------------------------------------------------------------
 
@@ -93,12 +125,22 @@ false.
 
 Aufgabe 2: 
 2.1:    
-    %mehrfache_kategorien(-Kategorien)
-    mehrfache_kategorien(Kategorien) :-
-        findall(Name,
-        (kategorie(ID1,Name,_),kategorie(ID2,Name,_), ID1\==ID2),
-        AlleKategorien), 
-        list_to_set(AlleKategorien,Kategorien).
+    Das Prädikat "mehrfache_kategorien" ermittelt welche Kategorien mehrfach im
+    Kategoriensystem enthalten sind. Wenn es doppelte Einträge gibt, also die ID
+    zweier Eintragungen identisch ist, wird dies nicht als eine wiederholende 
+    Kategorie interpretiert. Da das Prädikat eine Liste mit allen doppelten 
+    Kategorienamen ermittelt, darf das Argument nicht instanziiert sein.
+
+    Mit dem "findall"-Prädikat werden alle Kategorienamen gesucht, die gleich,
+    aber deren ID unterschiedlich sind. Mithilfe des Prädikats "list_to_set" lässt 
+    sich die Liste der Namen zu einer Menge konvertieren, wobei Duplikate gelöscht 
+    werden, da diese nicht in einer Menge sein dürfen.
+
+%mehrfache_kategorien(-Kategorien)
+mehrfache_kategorien(Kategorien) :-
+    findall(Name, (kategorie(ID1,Name,_),kategorie(ID2,Name,_), ID1\==ID2),
+        MehrfacheKategorien), 
+    list_to_set(MehrfacheKategorien,Kategorien).
 
 Testanfragen: 
 -----------------------------------------------------------------
@@ -113,10 +155,37 @@ X = [buch, kinder, krimi, roman, sachbuch, lyrik].
 
 
 2.2:    
-    %unterste_kategorie(?Schluessel,?Name)
-    unterste_kategorie(Schluessel,Name) :-
-        kategorie(Schluessel,Name,_), 
-        \+ (kategorie(_,_,Oberkategorie), Schluessel==Oberkategorie).
+    Das Prädikat "unterste_kategorien" gibt alle Kategorien und deren Schlüssel als
+    Liste aus, die keine weiteren Unterkategorien mehr besitzen. 
+    Die Unterkategorienliste darf dabei nicht instanziiert werden.
+
+%unterste_kategorien(-Unterkategorien)
+unterste_kategorien(Unterkategorien) :-
+    findall([Schluessel,Name], (kategorie(Schluessel,Name,_), 
+        \+ (kategorie(_,_,Oberkategorie), Schluessel==Oberkategorie)),
+        Unterkategorien).
+
+Testanfragen: 
+-----------------------------------------------------------------
+% unterste_kategorien(-)
+?- unterste_kategorien(X).
+X = [[5, kinder], [6, kinder], [7, krimi], [8, krimi], [9, krimi], [10, roman], 
+[11, roman], [12|...], [...|...]|...].
+-----------------------------------------------------------------
+
+
+    Alternative Lösung:
+
+    Das Prädikat "unterste_kategorie" ermittelt den Schlüssel und den Namen von
+    Kategorien, die keine Unterkategorien mehr besitzen und gibt diese nacheinander
+    aus. Dabei dürfen die Argumente instanziiert oder uninstanziiert sein.
+    Durch instanziierte Argumente lässt sich eine angegebene Kategorie prüfen,
+    ob diese Unterkategorien hat.
+
+%unterste_kategorie(?Schluessel,?Name)
+unterste_kategorie(Schluessel,Name) :-
+    kategorie(Schluessel,Name,_), 
+    \+ (kategorie(_,_,Oberkategorie), Schluessel==Oberkategorie).
 
 Testanfragen: 
 -----------------------------------------------------------------
@@ -176,12 +245,18 @@ false.
 
 
 2.3:  
-    %uneindeutige_oberkategorien(-Kategorien)
-    uneindeutige_oberkategorien(Kategorien) :-
-        findall(Unterkategorie, 
-            (kategorie(_,Unterkategorie,OID1), kategorie(_,Unterkategorie,OID2), 
-            OID1\==OID2),Kategorienliste), 
-        list_to_set(Kategorienliste,Kategorien).
+    Das Prädikat "uneindeutige_oberkategorien" gibt eine Liste mit den Kategorien-
+    namen aus, die mehrfach im Kategoriensystem vorkommen und eine unterschiedliche
+    Oberkategorie besitzen. Der Unterschied zum Prädikat "mehrfache_kategorien" aus
+    Aufgabe 2.1 ist, dass ein Eintrag mit dem selben Namen (unabhängig von der eigenen
+    ID) nicht aufgeführt wird, wenn die Oberkategorie identisch ist.
+
+%uneindeutige_oberkategorien(-Kategorien)
+uneindeutige_oberkategorien(Kategorien) :-
+    findall(Unterkategorie, 
+        (kategorie(_,Unterkategorie,OID1), kategorie(_,Unterkategorie,OID2), 
+        OID1\==OID2),Kategorienliste), 
+    list_to_set(Kategorienliste,Kategorien).
 
 Testanfragen: 
 -----------------------------------------------------------------
@@ -192,17 +267,24 @@ X = [kinder, krimi, roman, sachbuch, lyrik].
 % "kategorie(22,buch,0)." zu medien2.pl hinzugefügt
 ?- uneindeutige_oberkategorien(X).
 X = [kinder, krimi, roman, sachbuch, lyrik].
-
 -----------------------------------------------------------------
 
 
     Alternative Interpretation: 
-    Ein Knoten ist durch die ID eindeutig definiert.
+    Ein Knoten ist durch die ID und nicht durch den Namen eindeutig definiert.
 
-    %hierarchieverletzung(?ID,?Unterkategorie)
-    hierarchieverletzung(ID, Unterkategorie) :-
-        kategorie(ID,Unterkategorie,OID1), kategorie(ID,_,OID2), 
-        OID1\==OID2.
+    Das Prädikat "hierarchieverletzung" ermittelt die ID und den Namen von
+    Kategorien, die zwar dieselbe ID, aber nicht dieselbe Oberkategorie haben.
+    Dabei dürfen die Argumente instanziiert oder uninstanziiert sein.
+    Durch instanziierte Argumente lässt sich eine angegebene Kategorie prüfen,
+    ob diese unterschiedliche Oberkategorien und Namen hat.
+    Wenn es eine Hierarchieverletzung gibt, wird das Ergebnis doppelt ausgegeben, 
+    da beide Einträge geprüft werden, ob es einen weiteren mit gleicher ID gibt.
+
+%hierarchieverletzung(?ID,?Unterkategorie)
+hierarchieverletzung(ID, Unterkategorie) :-
+    kategorie(ID,Unterkategorie,OID1), kategorie(ID,_,OID2), 
+    OID1\==OID2.
 
 Testanfragen: 
 -----------------------------------------------------------------
@@ -210,7 +292,7 @@ Testanfragen:
 ?- hierarchieverletzung(ID,Name).
 false.
 
-% "kategorie(20,bastelbuch,4)." (Duplikat) zu medien2.pl hinzugefügt
+% "kategorie(1,buch,0)." (Duplikat) zu medien2.pl hinzugefügt
 ?- hierarchieverletzung(ID,Name).
 false.
 
@@ -251,13 +333,24 @@ ID = 21.
 
 Aufgabe 3: 
 3.1:
-    %oberkategorie_von(+ID,+Kategorie,?OID,?Oberkategorie)
-    oberkategorie_von(ID,Kategorie,OID,Oberkategorie) :-
-        kategorie(ID,Kategorie,OID), kategorie(OID,Oberkategorie,_).
+    Das Prädikat "oberkategorie_von" ermittelt zu einer eindeutig angegebenen 
+    Kategorie den Namen und Schlüssel ihrer Oberkategorien.
+    Da die angegebene Kategorie eindeutig sein soll, müssen die ID und der Name 
+    instanziiert sein. Die ID und der Name der Oberkategorie dürfen allerdings nicht
+    instanziiert sein, damit man immer nur die unmittelbar übergeordnete Kategorie 
+    erhält. Würde man sie stattdessen instanziieren, könnte man überprüfen, ob die
+    angegebene Oberkategorie irgendeine (nicht zwingend unmittelbare) Oberkategorie 
+    der angegeben Kategorie ist.
+    Das Prädikat kann rekursiv aufgerufen werden, wodurch die nächste 
+    Oberkategorie ermittelt werden kann.
 
-    oberkategorie_von(UID,Unterkategorie,OID,Oberkategorie) :-
-        kategorie(UID,Unterkategorie,ID), kategorie(ID,Kategorie,_), 
-        oberkategorie_von(ID,Kategorie,OID,Oberkategorie).
+%oberkategorie_von(+ID,+Kategorie,-OID,-Oberkategorie)
+    oberkategorie_von(ID,Kategorie,OID,Oberkategorie) :-
+    kategorie(ID,Kategorie,OID), kategorie(OID,Oberkategorie,_).
+
+oberkategorie_von(UID,Unterkategorie,OID,Oberkategorie) :-
+    kategorie(UID,Unterkategorie,ID), kategorie(ID,Kategorie,_), 
+    oberkategorie_von(ID,Kategorie,OID,Oberkategorie).
 
 Testanfragen: 
 -----------------------------------------------------------------
@@ -269,43 +362,41 @@ OID = 1,
 Oberkategorie = buch ;
 false.
 
-% oberkategorie_von(+,+,+,+)
-?- oberkategorie_von(15,bilderbuch,1,buch).
-true ;
-false.
-
-% oberkategorie_von(+,+,+,-)
-?- oberkategorie_von(15,bilderbuch,4,Oberkategorie).
-Oberkategorie = kinder ;
-false.
-
-% oberkategorie_von(+,+,-,+)
-?- oberkategorie_von(15,bilderbuch,OID,kinder).
-OID = 4 ;
-false.
-
-% Negativ-Beispiel:
-?- oberkategorie_von(15,bilderbuch,5,kinder).
+% Negativ-Beispiel: (Buch hat keine Oberkategorie)
+?- oberkategorie_von(1,buch,X,Y).
 false.
 -----------------------------------------------------------------
 
 
 3.2:    
-    %pfad_bis(+ID,+Kategorie,-Pfad)
-    pfad_bis(ID,Kategorie,Pfad) :-
-        findall(Oberkategorie, oberkategorie_von(ID,Kategorie,_,Oberkategorie),
-            UmgekehrterPfad), 
-        reverse(UmgekehrterPfad,Pfad).
+    Pfad ohne der gegebenen Kategorie:
+
+%pfad_bis(+ID,+Kategorie,-Pfad)
+pfad_bis(ID,Kategorie,Pfad) :-
+    findall(Oberkategorie, oberkategorie_von(ID,Kategorie,_,Oberkategorie),
+        UmgekehrterPfad), 
+    reverse(UmgekehrterPfad,Pfad).
+
+Testanfragen: 
+-----------------------------------------------------------------
+% pfad_bis(+,+,-)
+?- pfad_bis(15,bilderbuch,Pfad).
+Pfad = [buch, kinder].
+
+% Negativ-Beispiel:     (falsche Eingabe)
+?- pfad_bis(12,bilderbuch,Pfad).
+false.
+-----------------------------------------------------------------
 
 
     Pfad mit einschließlich der gegebenen Kategorie:
 
-    %pfad_bis(+ID,+Kategorie,-Pfad)
-    pfad_bis(ID,Kategorie,Pfad1) :-
-        findall(Oberkategorie, oberkategorie_von(ID,Kategorie,_,Oberkategorie),
-            UmgekehrterPfad), 
-        reverse(UmgekehrterPfad,Pfad),
-        \+ (Pfad==[]), append(Pfad,[Kategorie],Pfad1).
+%pfad_bis(+ID,+Kategorie,-Pfad)
+pfad_bis(ID,Kategorie,Pfad1) :-
+    findall(Oberkategorie, oberkategorie_von(ID,Kategorie,_,Oberkategorie),
+        UmgekehrterPfad), 
+    reverse(UmgekehrterPfad,Pfad),
+    \+ (Pfad==[]), append(Pfad,[Kategorie],Pfad1).
     
 Testanfragen: 
 -----------------------------------------------------------------
@@ -313,32 +404,52 @@ Testanfragen:
 ?- pfad_bis(15,bilderbuch,Pfad).
 Pfad = [buch, kinder, bilderbuch].
 
-% Negativ-Beispiel:
+% Negativ-Beispiel:     (falsche Eingabe)
 ?- pfad_bis(12,bilderbuch,Pfad).
 false.
 -----------------------------------------------------------------
 
 
 3.3:
-    
-% produkt(PId,KId,Titel,Autor,Verlag,Jahr,Lagerbestand).
+    Das Prädikat "produkte_der_kategorie" erzeugt zunächst eine Liste mit allen
+    Produkten derselben Kategorie und anschließend eine Liste mit allen Produkten 
+    aus ihren Unterkategorien. Dabei werden nicht nur die unmittelbaren 
+    Unterkategorien einbezogen, sondern alle Unterkategorien derselben Kategorienart.
+    Beispielsweise werden bei der Produktsuche der Kategorie "kinder" nicht nur
+    Kinderbücher und deren Unterkategorien "bilderbuch" und "bastelbuch" ausgegeben,
+    sondern auch Kinder-Ebücher und Kinder-Hörbücher.
+    Zum Schluss werden beide Produktlisten miteinander vereinigt und ausgegeben.
 
-    %Hilfsprädikat:
-    %unterkategorie_von(?ID,+Kategorie,?UID,?Unterkategorie)
-    unterkategorie_von(ID,Kategorie,UID,Unterkategorie) :-
-        kategorie(ID,Kategorie,_), kategorie(UID,Unterkategorie,ID).
-    unterkategorie_von(OID,Oberkategorie,UID,Unterkategorie) :-
-        kategorie(OID,Oberkategorie,_), kategorie(ID,Kategorie,OID),
-        unterkategorie_von(ID,Kategorie,UID,Unterkategorie).
+%Hilfsprädikat:
+%unterkategorie_von(?ID,+Kategorie,?UID,?Unterkategorie)
+unterkategorie_von(ID,Kategorie,UID,Unterkategorie) :-
+    kategorie(ID,Kategorie,_), kategorie(UID,Unterkategorie,ID).
+unterkategorie_von(OID,Oberkategorie,UID,Unterkategorie) :-
+    kategorie(OID,Oberkategorie,_), kategorie(ID,Kategorie,OID),
+    unterkategorie_von(ID,Kategorie,UID,Unterkategorie).
 
-    %produkte_der_kategorie(+Kategorie,-Produktliste)
-    produkte_der_kategorie(Kategorie,Produktliste) :-
-        findall([Titel,Autor,Verlag,Jahr],
-        (kategorie(ID,Kategorie,_),
-        produkt(_,ID,Titel,Autor,Verlag,Jahr,_)), Liste1),
-        findall([Titel,Autor,Verlag,Jahr],
+%produkte_der_kategorie(+Kategorie,-Produktliste)
+produkte_der_kategorie(Kategorie,Produktliste) :-
+    findall([Titel,Autor,Verlag,Jahr],
+        (kategorie(ID,Kategorie,_),produkt(_,ID,Titel,Autor,Verlag,Jahr,_)), 
+        Liste1),
+    findall([Titel,Autor,Verlag,Jahr],
         (unterkategorie_von(ID,Kategorie,UID,_),
-        produkt(_,UID,Titel,Autor,Verlag,Jahr,_)), Liste2),
-        append(Liste1,Liste2,Produktliste).
+        produkt(_,UID,Titel,Autor,Verlag,Jahr,_)), 
+        Liste2),
+    append(Liste1,Liste2,Produktliste).
 
+Testanfragen: 
+-----------------------------------------------------------------
+%(In der Produktliste befinden sich Bücher, E-Bücher und Hörbücher, 
+% aber sie sind alle Krimis)
+% produkte_der_kategorie(+,-)       
+?- produkte_der_kategorie(krimi,X).
+X = [[winterzeit, wolf_michael, meister, 2011], [blutrache, wolf_michael, 
+meister, 2007], [winterzeit, wolf_michael, meister, 2015], [blutrache, 
+wolf_michael, meister, 2015], [winterzeit, wolf_michael, audio, 2017]].
 
+% Negativ-Beispiel:     (Keine Kinderbucheinträge)
+?- produkte_der_kategorie(kinder,X).
+X = [].
+-----------------------------------------------------------------
