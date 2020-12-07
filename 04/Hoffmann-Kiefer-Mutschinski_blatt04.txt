@@ -266,6 +266,44 @@ false.
     
 
 2.4:
+-----------------------------------------------------------------
+%betroffene_orte(?Ungluecksort,-Ortsliste)
+betroffene_orte(Ungluecksort,Ortsliste) :-
+    findall([Ort1,Entfernung],
+            ist_betroffen_von(Ort1,Ungluecksort,Entfernung),
+            Ortsliste).
+-----------------------------------------------------------------
+
+Anfrage:
+-----------------------------------------------------------------
+?- betroffene_orte(bitterfeld,Orte).
+Orte = [[rosslau, 27], [muendung_saale, 60], [magdeburg, 95], [tangermuende, 158], 
+[muendung_havel, 192], [wittenberge, 223], [schnackenburg, 244], [geesthacht, 355], 
+[hamburg, 377], [muendung_elbe, 502].
+
+?- ist_betroffen_von(Ort,bitterfeld,Entfernung).
+Ort = rosslau,
+Entfernung = 27 ;
+Ort = muendung_saale,
+Entfernung = 60 ;
+Ort = magdeburg,
+Entfernung = 95 ;
+Ort = tangermuende,
+Entfernung = 158 ;
+Ort = muendung_havel,
+Entfernung = 192 ;
+Ort = wittenberge,
+Entfernung = 223 ;
+Ort = schnackenburg,
+Entfernung = 244 ;
+Ort = geesthacht,
+Entfernung = 355 ;
+Ort = hamburg,
+Entfernung = 377 ;
+Ort = muendung_elbe,
+Entfernung = 502 ;
+false.
+-----------------------------------------------------------------
 
 
 2.5:
