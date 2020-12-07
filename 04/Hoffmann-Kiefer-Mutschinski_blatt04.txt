@@ -111,7 +111,8 @@ Testanfragen:
     (false, wenn es keinen direkten Vorbesitzer (mehr) gibt.)
 
 %vorbesitzer2(+,-,+):
-    gibt nach und nach die genaue Abfolge der unmittelbaren Nachbesitzer aus.
+    gibt nach und nach die unmittelbaren Nachbesitzer aus. 
+    Die Reihenfolge ist dabei aber nicht richtig.
     (false, wenn es keinen direkt nachfolgenden Besitzer (mehr) gibt.)
 
 %vorbesitzer2(+,-,-):
@@ -134,6 +135,48 @@ Testanfragen:
 
 Aufgabe 2: 
 2.1:    
+    Wenn es im einen Zyklus im Fluss gibt, dann ist die Definition nicht 
+    terminierungssicher. Die Relation ist transitiv.
+
+-----------------------------------------------------------------
+%ist_betroffen_von(?Ort1,?Ort2)
+ist_betroffen_von(Ort1,Ort2) :-
+    stromaufwaerts(_,Ort2,Ort1,_).
+
+ist_betroffen_von(Ort1,Ort3) :-
+    stromaufwaerts(_,Ort2,Ort1,_),
+    ist_betroffen_von(Ort2,Ort3).
+-----------------------------------------------------------------
+
+Testanfragen:
+-----------------------------------------------------------------
+%ist_betroffen_von(+,+):
+    prüft, ob von Ort2 ein Fluss zu Ort1 führt.
+?- ist_betroffen_von(meissen,usti).
+true ;
+false.
+
+%ist_betroffen_von(+,-): 
+    gibt von einem gegebenen Ort alle Vororte aus, von denen ein Fluss führt.
+    Die Reihenfolge ist dabei nicht richtig.
+?- ist_betroffen_von(frankfurt_oder, Ort2).
+Ort2 = eisenhuettenstadt ;
+Ort2 = muendung_neisse ;
+false.
+
+%ist_betroffen_von(-,+):
+    gibt von einem gegebenen Ort aus alle nachfolgenden Orte zu denen ein Fluss
+    führt in der richtigen Reihenfolge aus.
+?- ist_betroffen_von(Ort1,wittenberge).
+Ort1 = schnackenburg ;
+Ort1 = geesthacht ;
+Ort1 = hamburg ;
+Ort1 = muendung_elbe ;
+false.
+
+%ist_betroffen_von(-,-):
+    gibt für jeden Ort alle nachfolgenden Orte nacheinander an.
+-----------------------------------------------------------------
 
 
 2.2:    
