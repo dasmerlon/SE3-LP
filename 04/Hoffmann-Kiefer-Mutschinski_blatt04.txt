@@ -165,8 +165,8 @@ Ort2 = muendung_neisse ;
 false.
 
 %ist_betroffen_von(-,+):
-    gibt von einem gegebenen Ort aus alle nachfolgenden Orte zu denen ein Fluss
-    führt in der richtigen Reihenfolge aus.
+    gibt von einem gegebenen Ort aus alle nachfolgenden Orte, zu denen ein Fluss
+    führt, in der richtigen Reihenfolge aus.
 ?- ist_betroffen_von(Ort1,wittenberge).
 Ort1 = schnackenburg ;
 Ort1 = geesthacht ;
@@ -180,6 +180,86 @@ false.
 
 
 2.2:    
+-----------------------------------------------------------------
+%ist_betroffen_von(?Ort1,?Ort2,?Entfernung)
+ist_betroffen_von(Ort1,Ort2,Entfernung) :-
+    stromaufwaerts(_,Ort2,Ort1,Distanz),
+    Entfernung = Distanz.
+
+ist_betroffen_von(Ort1,Ort3,Entfernung) :-
+    stromaufwaerts(_,Ort2,Ort1,Distanz1),
+    ist_betroffen_von(Ort2,Ort3,Distanz2),
+    Entfernung is Distanz1+Distanz2.
+-----------------------------------------------------------------
+
+Testanfragen:
+-----------------------------------------------------------------
+%ist_betroffen_von(+,+,+):
+    prüft, ob von Ort2 ein Fluss zu Ort1 führt und diese Orte die 
+    angegebene Entfernung haben.
+?- ist_betroffen_von(frankfurt_oder, eisenhuettenstadt,33).
+true ;
+false.
+
+%ist_betroffen_von(+,+,-): 
+    prüft, ob von Ort2 ein Fluss zu Ort1 führt und gibt, wenn das der Fall ist,
+    die Entfernung der beiden Orte aus.
+?- ist_betroffen_von(frankfurt_oder, muendung_neisse,Entfernung).
+Entfernung = 44 ;
+false.
+
+%ist_betroffen_von(+,-,+): 
+    gibt von einem gegebenen Ort alle Vororte aus, von denen ein Fluss führt und die
+    angegebene Entfernung korrekt ist.
+?- ist_betroffen_von(hamburg, Ort,154).
+Ort = wittenberge ;
+false.
+
+%ist_betroffen_von(+,-,-): 
+    gibt von einem gegebenen Ort alle Vororte, von denen ein Fluss führt, 
+    zusammen mit der Entfernung aus.
+?- ist_betroffen_von(frankfurt_oder, Ort2,Entfernung).
+Ort2 = eisenhuettenstadt,
+Entfernung = 33 ;
+Ort2 = muendung_neisse,
+Entfernung = 44 ;
+false.
+
+%ist_betroffen_von(-,+,+): 
+    gibt von einem gegebenen Ort aus alle nachfolgenden Orte, zu denen ein Fluss
+    führt und die entsprechend weit entfernt sind, aus.
+?- ist_betroffen_von(Ort1,wittenberge,154).
+Ort1 = hamburg ;
+false.
+
+%ist_betroffen_von(-,+,-): 
+    gibt von einem gegebenen Ort aus alle nachfolgenden Orte zu denen ein Fluss
+    führt, zusammen mit der Entfernung, in der richtigen Reihenfolge aus.
+?- ist_betroffen_von(Ort1,wittenberge,Entfernung).
+Ort1 = schnackenburg,
+Entfernung = 21 ;
+Ort1 = geesthacht,
+Entfernung = 132 ;
+Ort1 = hamburg,
+Entfernung = 154 ;
+Ort1 = muendung_elbe,
+Entfernung = 279 ;
+false.
+
+%ist_betroffen_von(-,-,+): 
+    gibt alle Orte an, bei der die Entfernung korrekt ist und von Ort2 zu Ort1 
+    ein Fluss führt.
+?- ist_betroffen_von(Ort1,Ort2,33).
+Ort1 = muendung_saale,
+Ort2 = rosslau ;
+Ort1 = frankfurt_oder,
+Ort2 = eisenhuettenstadt ;
+false.
+
+%ist_betroffen_von(-,-,-): 
+    gibt für jeden Ort1 alle Vororte, von denen ein Fluss führt, und
+    die jeweilige Entfernung an.
+-----------------------------------------------------------------
 
 
 2.3:  
