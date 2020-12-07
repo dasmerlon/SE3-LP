@@ -103,32 +103,32 @@ vorbesitzer2(ObjektID,Besitzer,Vorvorbesitzer) :-
 Testanfragen:
 -----------------------------------------------------------------
 %vorbesitzer2(+,+,+):
-    prüft, ob Besitzer und Vorbesitzer eines Hauses stimmen.
-    Der Vorbesitzer muss dabei nicht der direkte Vorbesitzer sein.
+%    prüft, ob Besitzer und Vorbesitzer eines Hauses stimmen.
+%    Der Vorbesitzer muss dabei nicht der direkte Vorbesitzer sein.
 
 %vorbesitzer2(+,+,-): 
-    gibt nach und nach die genaue Abfolge der unmittelbaren Vorbesitzer aus.
-    (false, wenn es keinen direkten Vorbesitzer (mehr) gibt.)
+%    gibt nach und nach die genaue Abfolge der unmittelbaren Vorbesitzer aus.
+%    (false, wenn es keinen direkten Vorbesitzer (mehr) gibt.)
 
 %vorbesitzer2(+,-,+):
-    gibt nach und nach die unmittelbaren Nachbesitzer aus. 
-    Die Reihenfolge ist dabei aber nicht richtig.
-    (false, wenn es keinen direkt nachfolgenden Besitzer (mehr) gibt.)
+%    gibt nach und nach die unmittelbaren Nachbesitzer aus. 
+%    Die Reihenfolge ist dabei aber nicht richtig.
+%    (false, wenn es keinen direkt nachfolgenden Besitzer (mehr) gibt.)
 
 %vorbesitzer2(+,-,-):
-    gibt alle Besitzer und all ihre Vorbesitzer eines Hauses aus.
+%    gibt alle Besitzer und all ihre Vorbesitzer eines Hauses aus.
 
 %vorbesitzer2(-,+,+):
-    gibt alle Häuser-IDs eines Besitzers und Vorbesitzers aus.
+%    gibt alle Häuser-IDs eines Besitzers und Vorbesitzers aus.
     
 %vorbesitzer2(-,+,-):
-    gibt alle Häuser-IDs und die Vorbesitzer eines gegebenen Besitzers aus.
+%    gibt alle Häuser-IDs und die Vorbesitzer eines gegebenen Besitzers aus.
 
 %vorbesitzer2(-,-,+):
-    gibt alle Häuser-IDs und die Nachbesitzer eines gegebenen Besitzers aus.
+%    gibt alle Häuser-IDs und die Nachbesitzer eines gegebenen Besitzers aus.
 
 %vorbesitzer2(-,-,-):
-    gibt zu allen Häuser-IDs alle Besitzer und all ihre Vorbesitzer aus.
+%    gibt zu allen Häuser-IDs alle Besitzer und all ihre Vorbesitzer aus.
 -----------------------------------------------------------------
 
 
@@ -151,22 +151,21 @@ ist_betroffen_von(Ort1,Ort3) :-
 Testanfragen:
 -----------------------------------------------------------------
 %ist_betroffen_von(+,+):
-    prüft, ob von Ort2 ein Fluss zu Ort1 führt.
+%    prüft, ob von Ort2 ein Fluss zu Ort1 führt.
 ?- ist_betroffen_von(meissen,usti).
-true ;
-false.
+true .
 
 %ist_betroffen_von(+,-): 
-    gibt von einem gegebenen Ort alle Vororte aus, von denen ein Fluss führt.
-    Die Reihenfolge ist dabei nicht richtig.
+%    gibt von einem gegebenen Ort alle Vororte aus, von denen ein Fluss führt.
+%    Die Reihenfolge ist dabei nicht richtig.
 ?- ist_betroffen_von(frankfurt_oder, Ort2).
 Ort2 = eisenhuettenstadt ;
 Ort2 = muendung_neisse ;
 false.
 
 %ist_betroffen_von(-,+):
-    gibt von einem gegebenen Ort aus alle nachfolgenden Orte, zu denen ein Fluss
-    führt, in der richtigen Reihenfolge aus.
+%    gibt von einem gegebenen Ort aus alle nachfolgenden Orte, zu denen ein Fluss
+%    führt, in der richtigen Reihenfolge aus.
 ?- ist_betroffen_von(Ort1,wittenberge).
 Ort1 = schnackenburg ;
 Ort1 = geesthacht ;
@@ -175,7 +174,7 @@ Ort1 = muendung_elbe ;
 false.
 
 %ist_betroffen_von(-,-):
-    gibt für jeden Ort alle nachfolgenden Orte nacheinander an.
+%    gibt für jeden Ort alle nachfolgenden Orte nacheinander an.
 -----------------------------------------------------------------
 
 
@@ -195,29 +194,28 @@ ist_betroffen_von(Ort1,Ort3,Entfernung) :-
 Testanfragen:
 -----------------------------------------------------------------
 %ist_betroffen_von(+,+,+):
-    prüft, ob von Ort2 ein Fluss zu Ort1 führt und diese Orte die 
-    angegebene Entfernung haben.
+%    prüft, ob von Ort2 ein Fluss zu Ort1 führt und diese Orte die 
+%    angegebene Entfernung haben.
 ?- ist_betroffen_von(frankfurt_oder, eisenhuettenstadt,33).
-true ;
-false.
+true .
 
 %ist_betroffen_von(+,+,-): 
-    prüft, ob von Ort2 ein Fluss zu Ort1 führt und gibt, wenn das der Fall ist,
-    die Entfernung der beiden Orte aus.
+%    prüft, ob von Ort2 ein Fluss zu Ort1 führt und gibt, wenn das der Fall ist,
+%    die Entfernung der beiden Orte aus.
 ?- ist_betroffen_von(frankfurt_oder, muendung_neisse,Entfernung).
 Entfernung = 44 ;
 false.
 
 %ist_betroffen_von(+,-,+): 
-    gibt von einem gegebenen Ort alle Vororte aus, von denen ein Fluss führt und die
-    angegebene Entfernung korrekt ist.
+%    gibt von einem gegebenen Ort alle Vororte aus, von denen ein Fluss führt und die
+%    angegebene Entfernung korrekt ist.
 ?- ist_betroffen_von(hamburg, Ort,154).
 Ort = wittenberge ;
 false.
 
 %ist_betroffen_von(+,-,-): 
-    gibt von einem gegebenen Ort alle Vororte, von denen ein Fluss führt, 
-    zusammen mit der Entfernung aus.
+%    gibt von einem gegebenen Ort alle Vororte, von denen ein Fluss führt, 
+%    zusammen mit der Entfernung aus.
 ?- ist_betroffen_von(frankfurt_oder, Ort2,Entfernung).
 Ort2 = eisenhuettenstadt,
 Entfernung = 33 ;
@@ -226,15 +224,15 @@ Entfernung = 44 ;
 false.
 
 %ist_betroffen_von(-,+,+): 
-    gibt von einem gegebenen Ort aus alle nachfolgenden Orte, zu denen ein Fluss
-    führt und die entsprechend weit entfernt sind, aus.
+%    gibt von einem gegebenen Ort aus alle nachfolgenden Orte, zu denen ein Fluss
+%    führt und die entsprechend weit entfernt sind, aus.
 ?- ist_betroffen_von(Ort1,wittenberge,154).
 Ort1 = hamburg ;
 false.
 
 %ist_betroffen_von(-,+,-): 
-    gibt von einem gegebenen Ort aus alle nachfolgenden Orte zu denen ein Fluss
-    führt, zusammen mit der Entfernung, in der richtigen Reihenfolge aus.
+%    gibt von einem gegebenen Ort aus alle nachfolgenden Orte zu denen ein Fluss
+%    führt, zusammen mit der Entfernung, in der richtigen Reihenfolge aus.
 ?- ist_betroffen_von(Ort1,wittenberge,Entfernung).
 Ort1 = schnackenburg,
 Entfernung = 21 ;
@@ -247,8 +245,8 @@ Entfernung = 279 ;
 false.
 
 %ist_betroffen_von(-,-,+): 
-    gibt alle Orte an, bei der die Entfernung korrekt ist und von Ort2 zu Ort1 
-    ein Fluss führt.
+%    gibt alle Orte an, bei der die Entfernung korrekt ist und von Ort2 zu Ort1 
+%    ein Fluss führt.
 ?- ist_betroffen_von(Ort1,Ort2,33).
 Ort1 = muendung_saale,
 Ort2 = rosslau ;
@@ -257,8 +255,8 @@ Ort2 = eisenhuettenstadt ;
 false.
 
 %ist_betroffen_von(-,-,-): 
-    gibt für jeden Ort1 alle Vororte, von denen ein Fluss führt, und
-    die jeweilige Entfernung an.
+%    gibt für jeden Ort1 alle Vororte, von denen ein Fluss führt, und
+%    die jeweilige Entfernung an.
 -----------------------------------------------------------------
 
 
@@ -307,6 +305,46 @@ false.
 
 
 2.5:
+    Die Prädikatseigenschaft ist symmetrisch, da ein Schiff auch gegen den 
+    Strom fahren kann.
+
+-----------------------------------------------------------------
+%ist_erreichbar_von(?Ort1,?Ort2).
+ist_erreichbar_von(Ort1,Ort2) :-
+    ist_betroffen_von(Ort1,Ort2).
+
+ist_erreichbar_von(Ort1,Ort2) :-
+    ist_betroffen_von(Ort2,Ort1).
+
+ist_erreichbar_von(Ort1,Ort3) :-
+    ist_betroffen_von(Ort1,Ort2),
+    ist_erreichbar_von(Ort2,Ort3).
+-----------------------------------------------------------------
+
+Testanfragen:
+-----------------------------------------------------------------
+%ist_erreichbar_von(+,+):
+%    prüft, ob Ort1 von Ort2 über einen Fluss erreichbar ist.
+?- ist_erreichbar_von(rosslau,hamburg).
+true .
+?- ist_erreichbar_von(hamburg,rosslau).
+true .
+?- ist_erreichbar_von(hamburg,frankfurt_oder).  %Negativbeispiel
+false.
+
+
+% Folgende Anfragen terminieren durch die symmetrische Relation nicht,
+% da die Suche unendlich viele Variablenbindungen erzeugt.
+
+%ist_erreichbar_von(+,-):
+%    gibt alle Orte nacheinander aus, von denen der gegebene Ort erreichbar ist.
+    
+%ist_erreichbar_von(-,+):
+%    gibt alle Orte nacheinander aus, die vom gegebenen Ort erreichbar sind.
+
+%ist_erreichbar_von(-,-):
+%   gibt für jeden Ort alle erreichbaren Orte aus.
+-----------------------------------------------------------------
 
 
 2.6:
