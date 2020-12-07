@@ -8,13 +8,127 @@ SE3-LP WiSe 2020/2021
 Aufgabenblatt 4:
 
 
-Aufgabe 1: 
-1.1:    
+Aufgabe 1:     
+        Wir gehen bei der Aufgabe davon aus, dass jeder Käufer ein Besitzer und 
+        jeder Verkäufer ein Vorbesitzer ist.
+1.1:   
+    Der Vorteil dieser Implementationsvariante ist, dass alle Vorbesitzer auf einmal
+    ausgegeben werden. Zudem werden nicht nur die unmittelbaren, sondern alle in der 
+    Datenbank enthaltenden Vorbesitzer ausgegeben. 
+    Nachteil ist, dass die Vorbesitzer nicht in der richtigen Reihenfolge sind.
+
+    Das Prädikat findet zunächst alle vorherigen Verkäufer des Hauses, danach alle
+    vorherigen Käufer des Hauses und fügt diese als Menge zusammen. Wenn man die 
+    Suche nach den vorherigen Käufern weglassen würde, würden die Vorbesitzer, 
+    die keinen Eintrag als Verkäufer haben, nicht gefunden werden. Somit wird auch 
+    der Fall eines fehlenden Eintrags abgedeckt.
+
 -----------------------------------------------------------------
+%vorbesitzer1(?ObjektID,?Besitzer,-Vorbesitzer)
+vorbesitzer1(ObjektID,Besitzer,Vorbesitzer) :-
+    bew(_,ObjektID,_,Besitzer,_,Datum1),
+    findall(Verkaeufer,
+            (bew(_,ObjektID,Verkaeufer,_,_,Datum2), Datum1>=Datum2),
+            Verkaeuferliste),
+    findall(Kaeufer,
+            (bew(_,ObjektID,_,Kaeufer,_,Datum3), Datum1>Datum3),
+            Kaeuferliste),
+    append(Verkaeuferliste,Kaeuferliste,Liste),
+    list_to_set(Liste,Vorbesitzer).
+-----------------------------------------------------------------
+
+Testanfragen:   
+bew(5,3,woehler,baumgartner,315000,19501201). hinzugefügt!
+-----------------------------------------------------------------
+%vorbesitzer1(+,+,-): 
+%    gibt eine Liste aller Vorbesitzer zu dem Besitzer und Haus aus.
+?- vorbesitzer1(3,mueller,Vorbesitzer).
+Vorbesitzer = [schulze, schneider, woehler, baumgartner].
+
+%vorbesitzer1(+,-,-):
+%    gibt alle Käufer des Hauses und jeweils all deren Vorbesitzer aus.
+?- vorbesitzer1(3,Besitzer,Vorbesitzer).
+Besitzer = schneider,
+Vorbesitzer = [schulze, woehler, baumgartner] ;
+Besitzer = mueller,
+Vorbesitzer = [schulze, schneider, woehler, baumgartner] ;
+Besitzer = baumgartner,
+Vorbesitzer = [woehler].
+
+%vorbesitzer1(-,+,-):
+%    gibt alle Häuser-IDs und alle zugehörigen Vorbesitzer eines Besitzers aus.
+?- vorbesitzer1(X,mueller,Vorbesitzer).
+X = 3,
+Vorbesitzer = [schulze, schneider, woehler, baumgartner].
+
+%vorbesitzer1(-,-,-):
+%    gibt zu allen Häuser_IDs alle Käufer und all deren Vorbesitzer aus.
+?- vorbesitzer1(X,Besitzer,Vorbesitzer).
+X = 1,
+Besitzer = meier,
+Vorbesitzer = [mueller] ;
+X = 3,
+Besitzer = schneider,
+Vorbesitzer = [schulze, woehler, baumgartner] ;
+X = 3,
+Besitzer = mueller,
+Vorbesitzer = [schulze, schneider, woehler, baumgartner] ;
+X = 5,
+Besitzer = piepenbrink,
+Vorbesitzer = [bund] ;
+X = 3,
+Besitzer = baumgartner,
+Vorbesitzer = [woehler].
 -----------------------------------------------------------------
 
 
 1.2:   
+    Der Vorteil dieser Implementationsvariante ist, dass man die Vorbesitzer in der 
+    richtigen Reihenfolge bekommt. Zudem ist sie richtungsunabhängig, wodurch man zB.
+    mit dem selben Prädikat auch die direkt nachfolgenden Besitzer ermitteln kann.
+    Nachteil ist, dass nur die unmittelbaren Vorbesitzer ausgegeben werden. 
+    Wenn beispielsweise ein Eintrag fehlt, werden alle Vorbesitzer, 
+    die nach diesem Eintrag kommen würden, nicht ausgegeben. 
+
+-----------------------------------------------------------------
+%vorbesitzer2(?ObjektID,?Besitzer,?Vorbesitzer)
+vorbesitzer2(ObjektID,Besitzer,Vorbesitzer) :-
+    bew(_,ObjektID,Vorbesitzer,Besitzer,_,_).
+
+vorbesitzer2(ObjektID,Besitzer,Vorvorbesitzer) :-
+    bew(_,ObjektID,Vorbesitzer,Besitzer,_,_),
+    vorbesitzer2(ObjektID,Vorbesitzer,Vorvorbesitzer).
+-----------------------------------------------------------------
+
+Testanfragen:
+-----------------------------------------------------------------
+%vorbesitzer2(+,+,+):
+    prüft, ob Besitzer und Vorbesitzer eines Hauses stimmen.
+    Der Vorbesitzer muss dabei nicht der direkte Vorbesitzer sein.
+
+%vorbesitzer2(+,+,-): 
+    gibt nach und nach die genaue Abfolge der unmittelbaren Vorbesitzer aus.
+    (false, wenn es keinen direkten Vorbesitzer (mehr) gibt.)
+
+%vorbesitzer2(+,-,+):
+    gibt nach und nach die genaue Abfolge der unmittelbaren Nachbesitzer aus.
+    (false, wenn es keinen direkt nachfolgenden Besitzer (mehr) gibt.)
+
+%vorbesitzer2(+,-,-):
+    gibt alle Besitzer und all ihre Vorbesitzer eines Hauses aus.
+
+%vorbesitzer2(-,+,+):
+    gibt alle Häuser-IDs eines Besitzers und Vorbesitzers aus.
+    
+%vorbesitzer2(-,+,-):
+    gibt alle Häuser-IDs und die Vorbesitzer eines gegebenen Besitzers aus.
+
+%vorbesitzer2(-,-,+):
+    gibt alle Häuser-IDs und die Nachbesitzer eines gegebenen Besitzers aus.
+
+%vorbesitzer2(-,-,-):
+    gibt zu allen Häuser-IDs alle Besitzer und all ihre Vorbesitzer aus.
+-----------------------------------------------------------------
 
 
 
