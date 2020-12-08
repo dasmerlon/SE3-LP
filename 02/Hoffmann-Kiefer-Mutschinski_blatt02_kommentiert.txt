@@ -1,0 +1,320 @@
+SE3-LP WiSe 2020/2021
+Übung Gr.04:
+    Merle Hoffmann      (7031673)
+    Lukas Kiefer        (7260745)
+    Björn Mutschinski   (7029008)
+
+
+Aufgabenblatt 2:
+
+
+Aufgabe 1: 
+1.1:    ?- mutter_von(X,P1),mutter_von(X,P2),P1\=P2.
+
+    Die Anfrage gibt eine Mutter (X) und zwei ihrer Kinder (P1,P2) aus, wobei die 
+    Kinder unterschiedliche Personen sind. Mütter mit weniger als 2 Kinder werden 
+    nicht ausgegeben. Es gibt dabei mehrere Ausgaben der gleichen Mutter und Kinder,
+    da alle möglichen Verbindungen der Variablen und Kinder ausgegeben wird.
+    P1 und P2 sind dabei entweder Geschwister oder Halbgeschwister mit gleicher 
+    Mutter, aber unterschiedlichem Vater.
+
+    Anfrage mit sinvollen Bezeichnern:
+        ?- mutter_von(Mutter,Kind1),mutter_von(Mutter,Kind2),Kind1\=Kind2.
+-----------------------------------------------------------------
+?- mutter_von(Mutter,Kind1),mutter_von(Mutter,Kind2),Kind1\=Kind2.
+Mutter = marie,
+Kind1 = hans,
+Kind2 = helga ;
+Mutter = marie,
+Kind1 = helga,
+Kind2 = hans ;
+Mutter = barbara,
+Kind1 = klaus,
+Kind2 = andrea ;
+Mutter = barbara,
+Kind1 = andrea,
+Kind2 = klaus ;
+Mutter = charlotte,
+Kind1 = barbara,
+Kind2 = magdalena ;
+Mutter = charlotte,
+Kind1 = magdalena,
+Kind2 = barbara ;
+false.
+-----------------------------------------------------------------
+
+
+1.2:    ?- mutter_von(P1,X),vater_von(X,P2),P1\=P2.
+
+    Die Anfrage gibt eine Mutter (P1), ihren Sohn (X) und dessen Kind (P2) aus, 
+    wobei die Mutter und das Kind des Sohnes (logischerweise) unterschiedliche 
+    Personen sind, bzw. unterschiedliche Namen haben. Mütter ohne Sohn oder deren 
+    Söhne keine Kinder haben, werden nicht ausgegeben. P1 und P2 sind dabei Oma 
+    und Enkelkind.
+
+    Anfrage mit sinvollen Bezeichnern:
+        ?- mutter_von(Oma,Vater),vater_von(Vater,Kind),Oma\=Kind.
+-----------------------------------------------------------------
+?-  mutter_von(Oma,Vater),vater_von(Vater,Kind),Oma\=Kind.
+Oma = julia,
+Vater = otto,
+Kind = hans ;
+Oma = julia,
+Vater = otto,
+Kind = helga ;
+false.
+-----------------------------------------------------------------
+
+
+1.3:    ?- vater_von(X,P1),mutter_von(Y,X),mutter_von(Y,Z),mutter_von(Z,P2),X\=Z.
+
+    Die Anfrage gibt eine Mutter (Y), ihren Sohn (X), ihre Tochter (Z) und 
+    dessen Kinder (P1,P2) aus. Der Sohn und die Tochter sind unterschiedliche 
+    Personen. P1 und P2 sind dabei Cousins bzw. Cousinen, wobei sie für den einen 
+    väterlicherseits und für den anderen mütterlicherseits verwand sind.	
+
+    Anfrage mit sinvollen Bezeichnern:
+        ?- vater_von(Vater,Kind1),mutter_von(Oma,Vater),mutter_von(Oma,Mutter),
+            mutter_von(Mutter,Kind2),Vater\=Mutter.
+-----------------------------------------------------------------
+?- vater_von(Vater,Kind1),mutter_von(Oma,Vater),mutter_von(Oma,Mutter),
+|    mutter_von(Mutter,Kind2),Vater\=Mutter.
+false.
+-----------------------------------------------------------------
+
+%%% Punkte: 2.0
+
+Aufgabe 2: 
+2.1:    Welche Bücher sind bereits seit mehr als vier Jahren im Angebot?
+
+    Wir sind bei der Aufgabe davon ausgegangen, dass mit "Bücher" ausschließlich
+    Produkte der Kategorie "buch" gemeint sind. Da das Buch *mehr* als vier Jahre
+    im Angebot sein soll, muss das Erscheinungsjahr *vor* 2016 sein.
+-----------------------------------------------------------------
+?- produkt(_,buch,Titel,Autor,Verlag,Erscheinungsjahr,_), Erscheinungsjahr<2016.
+Titel = sonnenuntergang,
+Autor = hoffmann_susanne,
+Verlag = meister,
+Erscheinungsjahr = 2010 ;
+Titel = winterzeit,
+Autor = wolf_michael,
+Verlag = meister,
+Erscheinungsjahr = 2011 ;
+Titel = winterzeit,
+Autor = wolf_michael,
+Verlag = meister,
+Erscheinungsjahr = 2015.
+-----------------------------------------------------------------
+
+
+2.2:    Von welchen Büchern wurden 2016 mehr Exemplare verkauft, als 2017?
+    
+    Mit der folgenden Anfrage werden nur Bücher ausgegeben, die auch in der
+    Datenbank einen Verkaufseintrag für beide Jahre haben. Wenn im Jahr 2016 
+    verkauft wurde, aber es keinen Eintrag für 2017 gibt, dann wird dieses Buch 
+    nicht ausgegeben.
+-----------------------------------------------------------------
+?- produkt(ID,buch,Titel,Autor,Verlag,Erscheinungsjahr,_), 
+|    verkauft(ID,2016,_,Verkauft16), verkauft(ID,2017,_,Verkauft17), 
+|    Verkauft16>Verkauft17.
+ID = 12345,
+Titel = sonnenuntergang,
+Autor = hoffmann_susanne,
+Verlag = meister,
+Erscheinungsjahr = 2010,
+Verkauft16 = 350,
+Verkauft17 = 168 ;
+ID = 12347,
+Titel = winterzeit,
+Autor = wolf_michael,
+Verlag = meister,
+Erscheinungsjahr = 2011,
+Verkauft16 = 9,
+Verkauft17 = 8 ;
+ID = 12349,
+Titel = winterzeit,
+Autor = wolf_michael,
+Verlag = meister,
+Erscheinungsjahr = 2015,
+Verkauft16 = 257,
+Verkauft17 = 12.
+-----------------------------------------------------------------
+
+    Eine alternative Anfrage, die diesen Fall berücksichtigt, sieht wiefolgt aus:
+    Wenn es keinen Eintrag für den Verkauf von 2017 gibt, wird geprüft, ob in 2016
+    mehr als 0 Exemplare verkauft wurden. Wenn das der Fall ist, wird das Buch
+    ausgegeben, allerdings fehlt dann eine Variablenzuordnung für "Verkauft17".
+    Da es in medien.pl diesen Fall nicht gibt, verändert sich die Ausgabe auch 
+    nicht. Man kann die Anfrage aber testen, indem man einen Verkaufseintrag von 
+    2017 eines dieser Bücher auskommentiert.
+-----------------------------------------------------------------
+?- produkt(ID,buch,Titel,Autor,Verlag,Erscheinungsjahr,_), 
+|    verkauft(ID,2016,_,Verkauft16),
+|    ((verkauft(ID,2017,_,Verkauft17), Verkauft16>Verkauft17);
+|    (\+verkauft(ID,2017,_,_), Verkauft16>0)).
+ID = 12345,
+Titel = sonnenuntergang,
+Autor = hoffmann_susanne,
+Verlag = meister,
+Erscheinungsjahr = 2010,
+Verkauft16 = 350,
+Verkauft17 = 168 ;
+ID = 12347,
+Titel = winterzeit,
+Autor = wolf_michael,
+Verlag = meister,
+Erscheinungsjahr = 2011,
+Verkauft16 = 9,
+Verkauft17 = 8 ;
+ID = 12349,
+Titel = winterzeit,
+Autor = wolf_michael,
+Verlag = meister,
+Erscheinungsjahr = 2015,
+Verkauft16 = 257,
+Verkauft17 = 12 ;
+false.
+-----------------------------------------------------------------
+
+
+2.3:    Welche Bücher werden auch als E-Buch angeboten?
+
+    Es reicht nicht nur die E-Bücher auszugeben, da es auch E-Bücher geben kann, 
+    die nicht als Buch angeboten werden. Wenn das Erscheinungsjahr vom Buch und 
+    E-Buch unterschiedlich ist, könnte es sich um eine andere Auflage handeln.
+    Daher haben wir auch das Erscheinungsjahr mit angegeben, sodass nur die Bücher
+    angegeben werden, die es auch in gleicher Version als E-Buch gibt.
+    (Wenn man das Erscheinungsjahr ignoriert, gibt es 2 Ergebnisse.)
+-----------------------------------------------------------------
+?- produkt(_,buch,Titel,Autor,Verlag,Erscheinungsjahr,_), 
+|    produkt(_,ebuch,Titel,Autor,Verlag,Erscheinungsjahr,_).
+Titel = blutrache,
+Autor = wolf_michael,
+Verlag = meister,
+Erscheinungsjahr = 2020 ;
+false.
+-----------------------------------------------------------------
+
+
+2.4:    Von welchem Buch wurden im Jahre 2012 die meisten Exemplare verkauft?
+
+    Wir ermitteln den maximalen Wert der Verkaufszahlen in 2012, indem wir mit dem
+    "not"-Prädikat für jeden Datenbankeintrag testen, ob es keinen höheren Wert 
+    gibt. Wenn der innere Teil des "not"-Aufrufs true ausgibt, bedeutet das, dass
+    es einen anderen Eintrag gibt, dessen Verkaufszahl größer ist und der Aufruf 
+    scheitert. Wenn es stattdessen keine höhere Verkaufszahl oder kein weiterer 
+    Verkaufseintrag von 2012 mehr gibt, gibt der innere Teil des "not"-Prädikats-
+    aufrufs false aus. Durch das negieren, wird er dementsprechend true und das
+    Ergebniss mit der höchsten Verkaufszahl wird ausgegeben.
+-----------------------------------------------------------------
+?- verkauft(ID,2012,_,Verkauft), \+ (verkauft(ID2,2012,_,Verkauft2),
+|    Verkauft<Verkauft2),produkt(ID,buch,Titel,Autor,Verlag,Erscheinungsjahr,_).
+ID = 12347,
+Verkauft1 = 23,
+Titel = winterzeit,
+Autor = wolf_michael,
+Verlag = meister,
+Erscheinungsjahr = 2011.
+-----------------------------------------------------------------
+
+%%% Es gibt ja nur ein einziges Buch, das im Jahr 2012
+%%% verkauft wurde. Reicht das dann als Test?
+
+%%% Punkte: 8.0
+
+
+Aufgabe 3: 
+3.1:
+    Wir haben ein Datenbankschema für eine Schule entworfen mit folgenden Prädikaten:
+    - schueler(SchuelerId,KlassenId,Name,Geburtstag,Adresse,Ort).
+    - klasse(KlassenId,LehrerId,Klasse,Raum).
+    - lehrer(LehrerId,Name,Adresse,Ort).
+    - veranstaltung(FachId,LehrerId,Fach,Raum,Tag,Start,Ende).
+    - note(SchuelerId,Fach,Note).
+    
+
+3.2:
+    Das Datenbankschema an sich ist eine Abstraktion einer Schule und dessen Abläufe
+    und Beteiligten. Dabei gibt es eine Abstraktion von irrelevanten Aspekten, indem
+    wir in unserem Datenbankschema zum Beispiel Urlaubstage der Lehrer oder Eltern
+    der Schüler, etc. ignorieren, bzw. nicht einbeziehen. Auch lassen wir zur
+    Vereinfachung weg, welche Veranstaltung für welche Jahrgänge gedacht sind.
+    
+    Eine Abstraktion durch Generalisierung sieht man zum Beispiel an der Beziehung 
+    von Schülern und Klassenlehrern. Statt einer Zuordnung von Schüler und Lehrer,
+    sind sie durch die gemeinsame Klasse miteinander verbunden.
+
+    Außerdem enthält das Datenbankschema Abstraktionen durch Vergröberung. 
+    Sonderfälle, wie Schulferien oder Ausfall werden weggelassen, sodass laut 
+    unserem Datenbankschema jede Veranstaltung jede Woche stattfindet.
+    Zudem sind Maßeinheiten, wie die Raumnummer oder die Uhrzeit Abstraktionen.
+
+
+3.3:
+    Siehe "schueler.pl".
+
+a)  Welche Lehrer leiten keine Klasse?
+-----------------------------------------------------------------
+?- lehrer(ID,Lehrer,_,_), \+klasse(_,ID,_,_).
+ID = 34569,
+Lehrer = woehler_annegret ;
+ID = 34570,
+Lehrer = baumgartner_klaus ;
+false.
+-----------------------------------------------------------------
+
+
+b)  Welche Schueler haben in Mathe eine 3 und in welche Klasse gehen sie?
+-----------------------------------------------------------------
+?- note(SId,mathe,3),schueler(SId,KId,Name,_,_,_),klasse(KId,_,Klasse,_).
+SId = 12345,
+KId = 23456,
+Name = bader_laura,
+Klasse = '2a' ;
+SId = 12346,
+KId = 23458,
+Name = loose_frieda,
+Klasse = '4b'.
+-----------------------------------------------------------------
+
+
+c)  Wann, wo und bei wem findet Deutsch statt?
+-----------------------------------------------------------------
+?- veranstaltung(_,ID,deutsch,Raum,Tag,Start,Ende),lehrer(ID,Lehrer,_,_).
+ID = 34570,
+Raum = 12,
+Tag = freitag,
+Start = 10:15,
+Ende = 11:45,
+Lehrer = baumgartner_klaus ;
+ID = 34568,
+Raum = 21,
+Tag = donnerstag,
+Start = 8:15,
+Ende = 9:45,
+Lehrer = erber_jens.
+-----------------------------------------------------------------
+
+
+d)  Welche Schüler sind in einer gemeinsamen Klasse?
+-----------------------------------------------------------------
+?- klasse(ID,_,Klasse,_),findall(Name,schueler(_,ID,Name,_,_,_),Klassenliste).
+ID = 23456,
+Klasse = '2a',
+Klassenliste = [bader_laura, landsmann_sebastian] ;
+ID = 23457,
+Klasse = '3c',
+Klassenliste = [urchs_jan-philipp, hermes_franziska] ;
+ID = 23458,
+Klasse = '4b',
+Klassenliste = [loose_frieda, baake_jacob].
+-----------------------------------------------------------------
+
+%%% Punkte: 5
+
+%%% Gesamt: 15/15
+
+%%% Sehr schön, vor allem die ausführlichen Diskussionen von Annahmen und
+%%% Sonderfällen.
+
+
