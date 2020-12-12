@@ -122,7 +122,7 @@ lässt sich dies vermeiden und es wird false ausgegeben.
 %%%Testanfragen:
 
 %ist_groesser_gleich(+,+): 
-%    prüft, ob die erste Peanozahl >= der zweiten Peanozahl entspricht. 
+%    prüft, ob die erste Peanozahl >= der zweiten Peanozahl ist. 
 ?- ist_groesser_gleich(s(s(s(0))),s(s(0))).
 true.
 ?- ist_groesser_gleich(s(s(0)),s(s(0))).
@@ -150,7 +150,7 @@ X = s(_39540), Y = 0 ;          % s(_) größer 0
 X = Y, Y = s(0) ;               % s(0) gleich s(0)
 X = s(s(_41358)), Y = s(0) ;    % s(s(_)) größer s(0)
 X = Y, Y = s(s(0)) ;            % s(s(0)) gleich s(s(0))
-... .                           %...
+... .                           % ...
 
 %Negativtest:
 ?- ist_groesser_gleich(s(0),s(s(0))).
@@ -161,6 +161,60 @@ false.
 
 
 %1.c:
+
+%ist_kleiner_gleich(?KPeano,?GPeano)
+ist_kleiner_gleich(0,0).              % Rekursionsabschluss gleich
+ist_kleiner_gleich(0,s(_)).           % Rekursionsabschluss kleiner
+ist_kleiner_gleich(s(A),s(B)) :-      % Rekursionsschritt
+    ist_kleiner_gleich(A,B).          % rekursiver Aufruf
+
+/*  
+Der Aufbau der Prädikate ist_groesser_gleich(Peano1,Peano2) und 
+ist_kleiner_gleich(Peano1,Peano2) sind gleich, außer dass die Argumente des 
+zweiten Rekursionsabschlusses vertauscht sind.
+Mit beiden Prädikaten kann man mit allen Instanziierungsvarianten die selben
+Ergebnisse erhalten. Der einzige Unterschied ist, dass die Argumente vertauscht sind.
+ist_groesser_gleich(A,B) entspricht ist_kleiner_gleich(B,A).
+
+%%%Testanfragen:
+
+%ist_groesser_gleich(+,+): 
+%    prüft, ob die erste Peanozahl <= der zweiten Peanozahl ist. 
+?- ist_kleiner_gleich(s(0),s(s(0))).
+true.
+?- ist_kleiner_gleich(s(0),s(0)).
+true ;
+false.
+
+%ist_groesser_gleich(+,-): 
+%    ermittelt alle Peanozahlen, die >= der angegebenen Peanozahl ist.
+?- ist_kleiner_gleich(s(s(0)),Y).
+Y = s(s(0)) ;
+Y = s(s(s(_16704))).
+
+%ist_groesser_gleich(-,+): 
+%    ermittelt alle Peanozahlen, die <= der angegebenen Peanozahl ist.
+?- ist_kleiner_gleich(X,s(s(0))).
+X = 0 ;
+X = s(0) ;
+X = s(s(0)).
+
+%ist_groesser_gleich(-,-): 
+%    gibt zu jeder Peanozahl alle Peanozahlen an, die kleiner oder gleich sind.
+?- ist_kleiner_gleich(X,Y).
+X = Y, Y = 0 ;                  % 0 gleich 0
+X = 0, Y = s(_20554) ;          % 0 kleiner s(_)
+X = Y, Y = s(0) ;               % s(0) gleich s(0)
+X = s(0), Y = s(s(_22372)) ;    % s(_) kleiner s(s(_))
+X = Y, Y = s(s(0)) ;            % s(s(0)) gleich s(s(0))
+... .                           % ...
+
+%Negativtest:
+?- ist_kleiner_gleich(s(s(0)),s(0)).
+false.
+?- ist_kleiner_gleich(1,Y).
+false.
+*/
 
 
 %1.d:
