@@ -16,8 +16,8 @@ Aufgabenblatt 5:
 %peano2int(+Peano,?Integer)
 peano2int(0,0).         % Rekursionsabschluss
 peano2int(s(P),N) :-    % Rekursionsschritt
-    peano2int(P,N1),    % rekursiver Aufruf
-    N is N1 + 1.        % Erhöhen der Integerzahl
+    peano2int(P,N1),        % rekursiver Aufruf
+    N is N1 + 1.            % Erhöhen der Integerzahl
 
 /*  
 Es handelt sich hierbei um eine induktive Implementierung, da die Rechnung nach 
@@ -39,6 +39,7 @@ X = s(0), Y = 1 ;
 X = s(s(0)), Y = 2 ;
 ... .
 
+
 %%%Testanfragen:
 
 %peano2int(+,+): 
@@ -50,7 +51,11 @@ true.
 %    wandelt die angegebene Peanozahl in eine Integerzahl um.
 ?- peano2int(s(s(s(0))),X).
 X = 3.
-?- peano2int(0,X).
+
+%Spezial-/Grenzfälle:
+?- peano2int2(0,0).     
+true.
+?- peano2int(0,X).    
 X = 0.
 
 %Negativtest:
@@ -64,13 +69,12 @@ false.
 %%% Alternativ (Augmentation):
 
 %peano2int2(+Peano,?Integer)
-peano2int2(s(P),N) :- 
-    peano2int2(s(P),0,N).   % Wrapper
-peano2int2(0,0).            % damit Aufruf peano2int2(0,_) nicht false ausgibt
+peano2int2(Z,N) :- 
+    peano2int2(Z,0,N).      % Wrapper
 peano2int2(0,X,X).          % Rekursionsabschluss
 peano2int2(s(P),A,N) :-     % Rekursionsschritt
-    A1 is A + 1,            % Erhöhen des Zählers
-    peano2int2(P,A1,N).     % rekursiver Aufruf
+    A1 is A + 1,                % Erhöhen des Zählers
+    peano2int2(P,A1,N).         % rekursiver Aufruf
 
 /*  
 Es handelt sich hierbei um eine endrekursive Implementierung, da die Rechnung vor 
@@ -78,9 +82,6 @@ dem rekursiven Aufruf folgt. Daher erfolgen die Berechnungen schon beim rekursiv
 Abstieg, weshalb diese Implementierung effizienter ist.
 Die Peanozahl muss hier ebenfalls aus den gleichen Gründen, wie bei der induktiven
 Implementierung, instanziiert werden.
-Es gibt einen weiteren Rekursionsabschluss peano2int2(0,0). damit Anfragen, die als
-Peanozahl eine 0 haben, also peano2int2(0,0), bzw. peano2int2(0,X) ebenfalls 
-funktionieren. Andernfalls würde bei diesen Fällen false ausgegeben werden.
 
 %%%Testanfragen:
 
@@ -93,7 +94,11 @@ true.
 %    wandelt die angegebene Peanozahl in eine Integerzahl um.
 ?- peano2int2(s(s(s(0))),X).
 X = 3.
-?- peano2int2(0,X).
+
+%Spezial-/Grenzfälle:
+?- peano2int2(0,0).     
+true.
+?- peano2int(0,X).    
 X = 0.
 
 %Negativtest:
@@ -107,10 +112,10 @@ false.
 %1.b: 
 
 %ist_groesser_gleich(?GPeano,?KPeano)
-ist_groesser_gleich(0,0).              % Rekursionsabschluss gleich
-ist_groesser_gleich(s(_),0).           % Rekursionsabschluss größer
-ist_groesser_gleich(s(A),s(B)) :-      % Rekursionsschritt
-    ist_groesser_gleich(A,B).          % rekursiver Aufruf
+ist_groesser_gleich(0,0).           % Rekursionsabschluss gleich
+ist_groesser_gleich(s(_),0).        % Rekursionsabschluss größer
+ist_groesser_gleich(s(A),s(B)) :-   % Rekursionsschritt
+    ist_groesser_gleich(A,B).           % rekursiver Aufruf
 
 /*
 Wenn man statt den zwei Rekursionsabschlüssen den Rekursionsabschluss 
@@ -163,10 +168,10 @@ false.
 %1.c:
 
 %ist_kleiner_gleich(?KPeano,?GPeano)
-ist_kleiner_gleich(0,0).              % Rekursionsabschluss gleich
-ist_kleiner_gleich(0,s(_)).           % Rekursionsabschluss kleiner
-ist_kleiner_gleich(s(A),s(B)) :-      % Rekursionsschritt
-    ist_kleiner_gleich(A,B).          % rekursiver Aufruf
+ist_kleiner_gleich(0,0).            % Rekursionsabschluss gleich
+ist_kleiner_gleich(0,s(_)).         % Rekursionsabschluss kleiner
+ist_kleiner_gleich(s(A),s(B)) :-    % Rekursionsschritt
+    ist_kleiner_gleich(A,B).            % rekursiver Aufruf
 
 /*  
 Der Aufbau der Prädikate ist_groesser_gleich(Peano1,Peano2) und 
@@ -218,6 +223,99 @@ false.
 
 
 %1.d:
+
+%halbieren(+Zahl,?HalbeZahl,?Rest)
+halbieren(Z,H,R) :- 
+    halbieren(Z,H,R,0).     % Wrapper
+halbieren(0,H,R,A) :-       % Rekursionsabschluss
+    R is A mod 2,               % Rest = Zahl modulo 2
+    X is A - R,                 % X = Zahl - Rest
+    H is X / 2.                 % HalbeZahl = X / 2
+halbieren(s(Z),H,R,A) :-    % Rekursionsschritt
+    A1 is A + 1,                % Erhöhen des Zählers
+    halbieren(Z,H,R,A1).        % rekursiver Aufruf
+
+/*
+Das Prädikat halbieren(Zahl,HalbeZahl,Rest) ermittelt für HalbeZahl und Rest eine
+Integerzahl. Der Typ der Ausgabe wurde in der Aufgabe nicht festgelegt.
+Wenn man stattdessen nur Peanozahlen als Ergebnis bekommen möchte, kann man 
+das beispielsweise mithilfe des int2peano-Prädikats aus der Vorlesung lösen.
+
+Das erste Argument, die Peanozahl, muss instanziiert werden, da es wie bei Aufgabe 
+1.a zu Terminierungsproblemen kommt, wenn man nach weiteren Alternativen fragt, die 
+nicht existieren. Dies tritt bei den Instanziierungsvarianten (-,+,+) und (-,+,-) 
+ein. Die Instanziierungsvariante (-,-,+) funktioniert zwar, aber nur wenn die 
+gegebene Restzahl eine 1 oder 0 ist, da es keine andere Restzahl bei der Division 
+mit 2 geben kann. Die Instanziierung (-,-,-) würde einwandfrei funktionieren.
+Mit dem Prädikat kann man keine Verdopplung einer Peanozahl, sondern höchstens eine 
+Verdopplung von einer Integer- zu einer Peanozahl mithilfe der Instanziierung (-,+,+)
+ermitteln. Da aber das erste Argument instanziiert sein muss, kann man generell 
+keine Verdopplung ermitteln.
+
+%halbieren(-,+,+): 
+?- halbieren(Z,3,1).
+Z = s(s(s(s(s(s(s(0))))))) ;
+Terminierungsproblem!
+
+%halbieren(-,+,-): 
+?- halbieren(Z,3,R).
+Z = s(s(s(s(s(s(0)))))), R = 0 ;
+Z = s(s(s(s(s(s(s(0))))))), R = 1 ;
+Terminierungsproblem!
+
+%halbieren(-,-,+):      Der Rest kann nur 0 oder 1 sein.
+?- halbieren(Z,H,1).
+Z = s(0), H = 0 ;
+Z = s(s(s(0))), H = 1 ;
+Z = s(s(s(s(s(0))))), H = 2 ;
+... .
+
+%halbieren(-,-,-): 
+?- halbieren(Z,H,R).
+Z = H, H = R, R = 0 ;
+Z = s(0), H = 0, R = 1 ;
+Z = s(s(0)), H = 1, R = 0 ;
+Z = s(s(s(0))), H = R, R = 1 ;
+... .
+
+
+%%%Testanfragen:
+
+%halbieren(+,+,+): 
+%    prüft, ob die Peanozahl, der Quotient und der Rest übereinstimmen.
+?- halbieren(s(s(s(0))),1,1).
+true.
+
+%halbieren(+,+,-): 
+%    ermittelt den Rest einer gegebenen Peanozahl und gegebenen Quotienten.
+?- halbieren(s(s(s(s(s(0))))),2,R).
+R = 1.
+
+%halbieren(+,-,+): 
+%    ermittelt den Quotienten einer gegebenen Peanozahl und gegebenen Rest.
+?- halbieren(s(s(s(s(s(0))))),H,1).
+H = 2.
+
+%halbieren(+,-,-): 
+%    ermittelt den Quotienten und den Rest einer Peanozahl als Integerzahl.
+?- halbieren(s(s(s(s(s(0))))),H,R).
+H = 2,
+R = 1.
+
+%Spezial-/Grenzfälle:
+?- halbieren(0,H,R).
+H = R, R = 0.
+?- halbieren(s(0),H,R).
+H = 0, R = 1.
+?- halbieren(s(s(0)),H,R).
+H = 1, R = 0.
+
+%Negativtest:
+?- halbieren(s(s(s(0))),2,1).
+false.
+?- halbieren(2,H,R).
+false.
+*/
 
 
 %1.e:
