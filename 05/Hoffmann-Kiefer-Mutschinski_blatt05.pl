@@ -35,10 +35,8 @@ Terminierungsproblem!
 
 ?- peano2int(X,Y).
 X = Y, Y = 0 ;
-X = s(0),
-Y = 1 ;
-X = s(s(0)),
-Y = 2 ;
+X = s(0), Y = 1 ;
+X = s(s(0)), Y = 2 ;
 ... .
 
 %%%Testanfragen:
@@ -63,12 +61,12 @@ false.
 */
 
 
-%%% Alternative:
+%%% Alternativ (Augmentation):
 
 %peano2int2(+Peano,?Integer)
 peano2int2(s(P),N) :- 
     peano2int2(s(P),0,N).   % Wrapper
-peano2int2(0,0).            % damit Aufruf peano2int2(0,X) nicht false ausgibt
+peano2int2(0,0).            % damit Aufruf peano2int2(0,_) nicht false ausgibt
 peano2int2(0,X,X).          % Rekursionsabschluss
 peano2int2(s(P),A,N) :-     % Rekursionsschritt
     A1 is A + 1,            % Erhöhen des Zählers
@@ -107,6 +105,59 @@ false.
 
 
 %1.b: 
+
+%ist_groesser_gleich(?GPeano,?KPeano)
+ist_groesser_gleich(0,0).              % Rekursionsabschluss gleich
+ist_groesser_gleich(s(_),0).           % Rekursionsabschluss größer
+ist_groesser_gleich(s(A),s(B)) :-      % Rekursionsschritt
+    ist_groesser_gleich(A,B).          % rekursiver Aufruf
+
+/*
+Wenn man statt den zwei Rekursionsabschlüssen den Rekursionsabschluss 
+ist_groesser_gleich(_,0). wählen würde, wären bei Anfragen der Art (+,-) und (-,+)
+auch Angaben von Nicht-Peanozahlen möglich. In den Fällen würde als Ergebnis eine 
+Variablenbindung mit 0 ausgegeben werden. Mithilfe der zwei Rekursionsabschlüsse
+lässt sich dies vermeiden und es wird false ausgegeben.
+
+%%%Testanfragen:
+
+%ist_groesser_gleich(+,+): 
+%    prüft, ob die erste Peanozahl >= der zweiten Peanozahl entspricht. 
+?- ist_groesser_gleich(s(s(s(0))),s(s(0))).
+true.
+?- ist_groesser_gleich(s(s(0)),s(s(0))).
+true ;
+false.
+
+%ist_groesser_gleich(+,-): 
+%    ermittelt alle Peanozahlen, die <= der angegebenen Peanozahl ist.
+?- ist_groesser_gleich(s(s(0)),Y).
+Y = 0 ;
+Y = s(0) ;
+Y = s(s(0)).
+
+%ist_groesser_gleich(-,+): 
+%    ermittelt alle Peanozahlen, die >= der angegebenen Peanozahl ist.
+?- ist_groesser_gleich(X,s(s(0))).
+X = s(s(0)) ;
+X = s(s(s(_45362))).    % _Zahl ist die interne Repräsentation einer Variable
+
+%ist_groesser_gleich(-,-): 
+%    gibt zu jeder Peanozahl alle Peanozahlen an, die größer oder gleich sind.
+?- ist_groesser_gleich(X,Y).
+X = Y, Y = 0 ;                  % 0 gleich 0
+X = s(_39540), Y = 0 ;          % s(_) größer 0
+X = Y, Y = s(0) ;               % s(0) gleich s(0)
+X = s(s(_41358)), Y = s(0) ;    % s(s(_)) größer s(0)
+X = Y, Y = s(s(0)) ;            % s(s(0)) gleich s(s(0))
+... .                           %...
+
+%Negativtest:
+?- ist_groesser_gleich(s(0),s(s(0))).
+false.
+?- ist_groesser_gleich(1,Y).
+false.
+*/
 
 
 %1.c:
