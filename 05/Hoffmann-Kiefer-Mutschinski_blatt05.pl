@@ -331,9 +331,9 @@ verdoppelt(s(P1),s(P2),A) :-    % Rekursionsschritt
 
 /*
 Das Prädikat verdoppelt(Peano1,Peano2) prüft für zwei Peanozahlen, ob Peano2 doppelt
-so groß ist, wie Peano1, indem es Peano1 kopiert und dann immer eine Zahl von Peano1
-abzieht und eine Zahl der Kopie hinzufügt, bis Peano1 zu 0 wird. Dann besteht die 
-Kopie aus 2*Peano1 und ist somit die verdoppelte Peanozahl. Wenn diese mit der 
+so groß ist, wie Peano1, indem es Peano1 kopiert und dann rekursiv eine Zahl von 
+Peano1 abzieht und eine Zahl der Kopie hinzufügt, bis Peano1 zu 0 wird. Dann besteht 
+die Kopie aus 2*Peano1 und ist somit die verdoppelte Peanozahl. Wenn diese mit der 
 unveränderten Peano2 übereinstimmt, ist Peano2 ebenfalls die Verdopplung von Peano1.
 
 Das erste Argument, Peano1, muss instanziiert werden, da es sonst bei der 
@@ -388,6 +388,100 @@ false.
 
 
 %1.f:
+
+%max(?Peano1,?Peano2,?PeanoMax)
+max(X,0,X).                     % Rekursionsabschluss für "Peano1 ist größer"
+max(0,X,X).                     % Rekursionsabschluss für "Peano2 ist größer"
+max(s(P1),s(P2),s(PM)) :-       % Rekursionsschritt
+    max(P1,P2,PM).                  % rekursiver Aufruf
+
+/*
+Das Prädikat max(Peano1,Peano2,PeanoMax) ermittelt für zwei Peanozahlen das Maximum,
+indem rekursiv immer eine Zahl abgezogen wird.Die erste Zahl, die zur 0 wird, ist
+die kleinere, weshalb die andere Zahl gleich PeanoMax gilt. Bei Gleichheit erhält 
+man als Ergebnis zweimal die gleiche Variablenbindung, da beide Rekursionsabschlüsse
+erfolgreich sind, indem beide Peanozahlen gleichzeitig bei 0 enden.
+
+%%%Testanfragen:
+
+%max(+,+,+):
+%    prüft, ob die maximale Peanozahl wirklich das Maximum zweier Peanozahlen ist.
+?- max(s(s(0)),s(0),s(s(0))).
+true ;
+false.
+?- max(s(0),s(s(0)),s(s(0))).
+true.
+
+%max(+,+,-):
+%    ermittelt das Maximum zweier Peanozahlen. 
+?- max(s(0),s(s(0)),Max).
+Max = s(s(0)).
+
+%max(+,-,+):
+%    ermittelt die andere Zahl bei gegebenen Maximum und einer Zahl.
+%    Gleich zu (-,+,+).
+?- max(s(0),P2,s(s(0))).
+P2 = s(s(0)).
+
+%max(+,-,-):
+%    ermittelt bei gegebener Zahl, alle Kombinationen einer weiteren Zahl und 
+%    dessen gemeinsames Maximum. Gleich zu (-,+,-).
+?- max(s(s(0)),P2,Max).
+P2 = 0, Max = s(s(0)) ;
+P2 = s(0), Max = s(s(0)) ;
+P2 = Max, Max = s(s(0)) ;
+P2 = Max, Max = s(s(_14398)).
+
+%max(-,+,+):
+%    ermittelt die andere Zahl bei gegebenen Maximum und einer Zahl.
+%    Gleich zu (+,-,+).
+?- max(P1,0,s(0)).
+P1 = s(0) ;
+false.
+
+%max(-,+,-):
+%    ermittelt bei gegebener Zahl, alle Kombinationen einer weiteren Zahl und 
+%    dessen gemeinsames Maximum. Gleich zu (+,-,-).
+?- max(P1,s(0),Max).
+P1 = 0, Max = s(0) ;
+P1 = Max, Max = s(_1976) ;
+P1 = Max, Max = s(0) ;
+false.
+
+%max(-,-,+):
+%    ermittelt bei gegebenem Maximum alle möglichen Kombinationen zweier Zahlen.
+?- max(P1,P2,s(0)).
+P1 = s(0), P2 = 0 ;
+P1 = 0, P2 = s(0) ;
+P1 = P2, P2 = s(0) ;
+P1 = P2, P2 = s(0) ;
+false.
+
+%max(-,-,-):
+%    ermittelt alle Kombinationen von zwei Zahlen und dessen Maximum.
+?- max(P1,P2,Max).
+P1 = Max, P2 = 0 ;
+P1 = 0, P2 = Max ;
+P1 = Max, Max = s(_18190), P2 = s(0) ;
+P1 = s(0), P2 = Max, Max = s(_18194) ;
+... .
+
+%Sonder-/Grenzfälle:
+?- max(s(s(0)),s(s(0)),Max).
+Max = s(s(0)) ;
+Max = s(s(0)).
+?- max(P1,s(0),s(0)).
+P1 = 0 ;
+P1 = s(0) ;
+P1 = s(0) ;
+false.
+
+%Negativtest:
+?- max(P1,s(s(0)),s(0)).
+false.
+?- max(s(s(0)),1,Max).
+false.
+*/
 
 
 %1.g:
