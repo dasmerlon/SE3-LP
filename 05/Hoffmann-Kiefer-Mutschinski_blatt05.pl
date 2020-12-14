@@ -29,10 +29,12 @@ und auch die Instanziierungsvariante peano2int(-,+) ermittelt erfolgreich zur
 gegebenen Integerzahl die dazugehörige Peanozahl, allerdings kommt es zu einem
 Terminierungsproblem, wenn nach der Ausgabe nach weiteren Alternativen gefragt wird.
 
+%peano2int(-,+): 
 ?- peano2int(X,3).
 X = s(s(s(0))) ;
 Terminierungsproblem!
 
+%peano2int(-,-): 
 ?- peano2int(X,Y).
 X = Y, Y = 0 ;
 X = s(0), Y = 1 ;
@@ -318,7 +320,68 @@ false.
 */
 
 
-%1.e:
+%1.e:       
+
+%verdoppelt(+Peano1,?Peano2)
+verdoppelt(P1,P2) :-
+    verdoppelt(P1,P2,P1).
+verdoppelt(0,X,X).
+verdoppelt(s(P1),s(P2),A) :-
+    verdoppelt(P1,s(P2),s(A)).
+
+/*
+Das Prädikat verdoppelt(Peano1,Peano2) prüft für zwei Peanozahlen, ob Peano2 doppelt
+so groß ist, wie Peano1. 
+
+Das erste Argument, Peano1, muss instanziiert werden, da es sonst bei der 
+Instanziierungsvariante (-,+) zu Terminierungsproblemen kommen kann. Bei der 
+Instanziierung einer geraden Peanozahl als zweites Argument, gibt das Prädikat zwar
+das richtige Ergebnis, also die halbierte Peanozahl, aus, aber bei der Anfrage nach 
+weiteren Alternativen kommt es dann zu einem Terminierungsproblem. Wenn man direkt
+nach der halben Peanozahl einer ungeraden Peanozahl fragt, kommt es stattdessen
+direkt zu einem Terminierungsproblem, da es nur natürliche und keine rationalen
+Peanozahlen gibt. Die Instanziierung (-,-) würde theoretisch funktionieren und würde
+alle Peanozahlen mit ihrer Verdopplung ausgeben.
+Folglich lässt sich das Prädikat theoretisch(!) zum Halbieren von Peanozahlen 
+verwenden, da aber keine Terminierungssicherheit garantiert werden kann, darf man es
+dafür nicht nutzen, da Peano1 (die halbe Peanozahl) immer instanziiert sein muss.
+
+%verdoppelt(-,+): 
+?- verdoppelt(X,s(s(s(s(0))))).
+X = s(s(0)) ;
+Terminierungsproblem!
+?- verdoppelt(X,s(s(s(0)))).
+Terminierungsproblem!
+
+%verdoppelt(-,-): 
+?- verdoppelt(X,Y).
+X = Y, Y = 0 ;
+X = s(0), Y = s(s(0)) ;
+X = s(s(0)), Y = s(s(s(s(0)))) ;
+X = s(s(s(0))), Y = s(s(s(s(s(s(0)))))) ;
+... .
+
+
+%%%Testanfragen:
+
+%verdoppelt(+,+):
+%    prüft, ob die zweite Peanozahl doppelt so groß ist, wie die erste.
+?- verdoppelt(s(s(0)),s(s(s(s(0))))).
+true.
+
+%verdoppelt(+,-): 
+%    ermittelt zu einer gegebenen Peanozahl die verdoppelte Peanozahl.
+?- verdoppelt(s(s(0)),Y).
+Y = s(s(s(s(0)))).
+
+%Sonder-/Grenzfälle:
+?- verdoppelt(0,Y).
+Y = 0.
+
+%Negativtest:
+?- verdoppelt(s(s(0)),s(s(s(0)))).
+false.
+*/
 
 
 %1.f:
@@ -330,6 +393,6 @@ false.
 
 %%%Aufgabe 2: 
 %2.1:    
-    
+
 
 %2.2:
