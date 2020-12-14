@@ -229,7 +229,7 @@ false.
 %halbieren(+Zahl,?HalbeZahl,?Rest)
 halbieren(Z,H,R) :- 
     halbieren(Z,H,R,0).     % Wrapper
-halbieren(0,H,R,A) :-       % Rekursionsabschluss
+halbieren(0,H,R,A) :-       % Rekursionsabschluss & Rechnung
     R is A mod 2,               % Rest = Zahl modulo 2
     X is A - R,                 % X = Zahl - Rest
     H is X / 2.                 % HalbeZahl = X / 2
@@ -323,15 +323,18 @@ false.
 %1.e:       
 
 %verdoppelt(+Peano1,?Peano2)
-verdoppelt(P1,P2) :-
-    verdoppelt(P1,P2,P1).
-verdoppelt(0,X,X).
-verdoppelt(s(P1),s(P2),A) :-
-    verdoppelt(P1,s(P2),s(A)).
+verdoppelt(P1,P2) :-            
+    verdoppelt(P1,P2,P1).       % Wrapper
+verdoppelt(0,X,X).              % Rekursionsabschluss
+verdoppelt(s(P1),s(P2),A) :-    % Rekursionsschritt
+    verdoppelt(P1,s(P2),s(A)).      % rekursiver Aufruf
 
 /*
 Das Prädikat verdoppelt(Peano1,Peano2) prüft für zwei Peanozahlen, ob Peano2 doppelt
-so groß ist, wie Peano1. 
+so groß ist, wie Peano1, indem es Peano1 kopiert und dann immer eine Zahl von Peano1
+abzieht und eine Zahl der Kopie hinzufügt, bis Peano1 zu 0 wird. Dann besteht die 
+Kopie aus 2*Peano1 und ist somit die verdoppelte Peanozahl. Wenn diese mit der 
+unveränderten Peano2 übereinstimmt, ist Peano2 ebenfalls die Verdopplung von Peano1.
 
 Das erste Argument, Peano1, muss instanziiert werden, da es sonst bei der 
 Instanziierungsvariante (-,+) zu Terminierungsproblemen kommen kann. Bei der 
