@@ -751,4 +751,87 @@ false.      % keine Verkaufseinträge für die angegebenen Daten:
 */
 
 
-%2.2: 
+%2.2:       Entspricht nicht ganz der Aufgabenstellung :(
+
+%teuerstes_produkt(+Jahr,+KID,?PID)
+teuerstes_produkt(Jahr,KID,PID) :-
+    findall([Preis,ID],                                 % findet alle Preise und IDs
+            (produkte_in_kategorie(KID,ID),             % aller gefragten Produkte
+                verkauft(ID,Jahr,Preis,_)),
+            Preisliste),
+    teuer(Preisliste,[0],PID).     
+
+teuer([],TeuerstesProdukt,PID):-                       % Rekursionsabschluss
+    TeuerstesProdukt=[_,PID].                               % entnehme die ID
+teuer(Preisliste,TeuerstesProdukt,PID):-               % Rekursionsschritt, wenn Kopf teurer/gleich
+    Preisliste=[Produkt|Restliste],                      
+    Produkt=[Preis|_],
+    TeuerstesProdukt=[Preis2|_],
+    Preis>=Preis2, teuer(Restliste,Produkt,PID).     
+teuer(Preisliste,TeuerstesProdukt,PID):-               % Rekursionsschritt, wenn Kopf günstiger/gleich
+    Preisliste=[Produkt|Restliste],
+    Produkt=[Preis|_],
+    TeuerstesProdukt=[Preis2|_],
+    Preis=<Preis2, teuer(Restliste,TeuerstesProdukt,PID).
+
+/*
+Das Prädikat ermittelt das teuerste Produkt einer gegebenen Kategorie und Jahr.
+
+%%%Testanfragen:
+
+%teuerstes_produkt(+,+,+)
+?- teuerstes_produkt(2016,0,12349).
+true ;
+false.
+
+%teuerstes_produkt(+,+,-)
+?- teuerstes_produkt(2018,0,X).
+X = 12345 ;
+false.
+
+%Sonder-/Grenzfälle:
+?- teuerstes_produkt(2016,0,X).     % zwei teuerste Produkte
+X = 12349 ;
+X = 12347 ;
+false.
+?- teuerstes_produkt(2011,0,X).     % nur ein Eintrag
+X = 12347 ;
+false.
+
+%Negativtest:  
+?- teuerstes_produkt(2010,0,X).     % kein Eintrag
+false.
+*/
+
+
+
+/*
+Weitere Denkanstöße und Probeprädikate (unvollständig und nicht korrekt):
+
+
+%für EINE gegebene Kategorie und Jahr-> teuerstes Produkt
+teuerstes_produkt2(Jahr,ID,KID) :-
+    verkauft(ID,Jahr,Preis,_), 
+    \+ (verkauft(ID2,Jahr,Preis2,_),
+        produkt(ID2,KID,_,_,_,_,_),
+        Preis<Preis2),
+    produkt(ID,KID,_,_,_,_,_).
+
+teuerstes_produkt3(Jahr,ID):-
+    teuerstes_produkt(Jahr,ID,21).
+teuerstes_produkt3(_,_,0).
+teuerstes_produkt3(Jahr,ID,KID) :-
+    verkauft(ID,Jahr,Preis,_), 
+    \+ (verkauft(ID2,Jahr,Preis2,_),
+        produkt(ID2,KID,_,_,_,_,_),
+        Preis<Preis2),
+    produkt(ID,KID,_,_,_,_,_),
+    IdSub is KID-1,
+    teuerstes_produkt3(Jahr,ID,IdSub).
+
+teuerstes_produkt4(Jahr,ID,KName) :-
+    kategorie(KID,KName,_),
+    produkt(ID,KID,_,_,_,_,_),
+    verkauft(ID,Jahr,Preis1,_),
+    \+ (verkauft(_,Jahr,Preis2,_), Preis1>Preis2).
+*/
