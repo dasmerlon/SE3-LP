@@ -679,8 +679,76 @@ false.                      % aufgrund des Rekursionsabschlusses false
 
 
 
-%%%Aufgabe 2: 
-%2.1:    
+%%%Aufgabe 2:   
+%2.1:           medien2.pl ohne 2020-Einträge laden!
+
+%Hilfsprädiakt produkte_in_kategorie(KID,PID) von Blatt 03, Aufgabe 3.3 
+% zur Suche aller Produkte einer Kategorie und ihrer Unterkategorien
+%produkte_in_kategorie(?KID,?PID)
+produkte_in_kategorie(KID,PID) :-
+    produkt(PID,KID,_,_,_,_,_).
+produkte_in_kategorie(KID,PID) :-
+    kategorie(IdSub,_,KID),
+    produkte_in_kategorie(IdSub,PID).
+
+%Hilfsprädiakt zur Berechnung des Durchschnittpreises
+durchschnitt([],Durchschnitt,Summe,Anzahl):-            % Rekursionsabschluss
+    Durchschnitt is Summe / Anzahl.                         % Durchschnittsberechnung
+durchschnitt(Preisliste,Durchschnitt,Summe,Anzahl) :-   % Rekursionsschritt
+    Preisliste=[Preis|Restliste],                           % [Kopf|Rest]
+    Summe2 is Summe + Preis,                                % Zwischensumme
+    durchschnitt(Restliste,Durchschnitt,Summe2,Anzahl).     % rekursiver Aufruf
 
 
-%2.2:
+%durchschnittlicher_preis(+Jahr,+KID,?Durchschnitt)
+durchschnittlicher_preis(Jahr,KID,Durchschnitt) :-
+    findall(Preis,                                      % findet alle Preise aller
+            (produkte_in_kategorie(KID,ID),             % gefragten Produkte
+                verkauft(ID,Jahr,Preis,_)),
+            Preisliste),
+    length(Preisliste,Anzahl),                          % Anzahl der Preise
+    Anzahl>0,                                           % prüft, ob Anzahl>0
+    durchschnitt(Preisliste,Durchschnitt,0,Anzahl).     % Aufruf des Hilfsprädiakts
+
+/*
+Das Prädikat durchschnittlicher_preis(Jahr,KID,Durchschnitt) berechnet zu einem 
+gegebenen Jahr den durchschnittlichen Preis aller Produkte einer Kategorie und
+ihrer Unterkategorien. Dazu werden alle Preise aller Produkte der Kategorie und 
+Unterkategorien in einer Liste zusammengetragen. Anzahl>0 prüft dabei, dass die
+Liste nicht leer ist, damit später im Prädikat durchschnitt() nicht durch 0 geteilt
+wird. Das Prädikat durchschnitt() entnimmt rekursiv den Kopf der Liste und rechnet
+so alle Preise zusammen. Wenn die Liste leer ist, wird der Durchschnitt berechnet, 
+indem die Summe mit der Anzahl der Produkte dividiert wird.
+
+Das Jahr und die Kategorie müssen bei durchschnittlicher_preis(Jahr,KID,Durchschnitt) 
+immer instanziiert sein, da diese Argumente bei dem Prädikatsaufruf 
+durchschnitt(PL,D,S,A) nicht mit übergeben werden und man danach
+nicht mehr auf sie zugreifen, bzw. sie ermitteln kann.
+
+%%%Testanfragen:
+
+%max(+,+,+):
+%    prüft, ob das Verkaufsjahr und die Kategorie mit dem angegebenen 
+%    Durchschnittspreis übereinstimmen.
+?- durchschnittlicher_preis(2018,7,18.5).
+true ;
+false.
+
+%max(+,+,-):
+%    ermittelt den Durchschnittspreis aller Produkte einer Kategorie in einem Jahr.
+?- durchschnittlicher_preis(2018,1,Durchschnittspreis).
+Durchschnittspreis = 20 ;
+false.
+
+%Sonder-/Grenzfälle:
+?- durchschnittlicher_preis(2011,KID,Durchschnittspreis).
+Durchschnittspreis = 39 ;       %nur ein Eintrag für 2011
+false.
+
+%Negativtest:   
+?- durchschnittlicher_preis(2015,4,Durchschnittspreis).
+false.      % keine Verkaufseinträge für die angegebenen Daten:
+*/
+
+
+%2.2: 
