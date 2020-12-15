@@ -572,6 +572,111 @@ false.
 
 %1.g:
 
+%Hilfsprädiakt add(P1,P2,S) aus der Vorlesung S.168:
+%add(?Peano1,?Peano2,?Summe)
+add(0,X,X).                 % Rekursionsabschluss
+add(s(P1),P2,s(S)) :-       % Rekursionsschritt
+    add(P1,P2,S).               % rekursiver Aufruf
+
+%peano_rbm(+Peano1,+Peano2,?Resultat)
+peano_rbm(P1,s(0),P1).              % Rekursionsabschluss
+peano_rbm(P1,s(P2),R) :-            % Rekursionsschritt für ungerade Peanozahl
+    s(P2) @> s(0),                      % prüfe, ob Peano2 größer 1
+    odd(s(P2)),                         % prüfe, ob Peano2 ungerade
+    peano_rbm(P1,P2,R1),                % rekursiver Aufruf mit Peano2-1 und
+    add(R1,P1,R).                       % Resultat=Resultat1+Peano1
+peano_rbm(P1,P2,R) :-               % Rekursionsschritt für gerade Peanozahl
+    P2 @> s(0),                         % prüfe, ob Peano2 größer 1
+    even(P2),                           % prüfe, ob Peano2 gerade
+    verdoppelt(P1,P11),                 % P11=verdoppel Peano1
+    halbieren2(P2,P21,_),               % P21=halbiere Peano2
+    peano_rbm(P11,P21,R).               % rekursiver Aufruf mit P11 und P21
+
+/*
+Das Prädikat peano_rbom(P1,P2,R) ist im Aufbau und vom Ablauf analog zu dem Prädikat
+rbm(F1,F2,P) aus der Vorlesung S.212.
+
+Das Prädikat lässt sich nicht für die Division verwenden, da beide Peanozahlen
+gegeben sein müssen und aus dennen immer das Produkt der Bauernmultiplikation 
+ermittelt wird. Das erste Argument muss immer instanziiert sein, da es bei der 
+Instanziierung (-,+,+) beispielsweise bei der Abfrage nach Alternativen zur 
+Terminierungsproblemen kommt. Das zweite Argument muss instanziiert sein, da für
+das zweite Argument immer nur die Variablenbindung mit s(0) ausgegeben wird, da dies
+in dem Rekursionsabschluss festgelegt ist.
+
+%peano_rbm(+,-,+):      
+?- peano_rbm(s(s(0)),P2,s(s(s(s(s(s(0))))))).
+false.      % aufgrund des Rekursionsabschlusses (P2 wäre eigentlich s(s(s(0))))
+
+%peano_rbm(+,-,-):
+?- peano_rbm(s(s(0)),P2,R).
+P2 = s(0),
+R = s(s(0)) ;
+false.      % es gäbe eigentlich mehr Lösungen
+
+%peano_rbm(-,+,+):
+?- peano_rbm(P1,s(s(s(0))),s(s(s(s(s(s(0))))))).
+P1 = s(s(0)) ;
+Terminierungsproblem!
+
+%peano_rbm(-,+,-):
+?- peano_rbm(P1,s(s(s(0))),R).
+P1 = R, R = 0 ;
+P1 = s(0), R = s(s(s(0))) ;
+P1 = s(s(0)), R = s(s(s(s(s(s(0)))))) ;
+... .
+
+%peano_rbm(-,-,+):
+?- peano_rbm(P1,P2,s(s(s(s(s(s(0))))))).
+P1 = s(s(s(s(s(s(0)))))),
+P2 = s(0) ;
+false.      % es gäbe eigentlich mehr Lösungen
+
+%peano_rbm(-,-,-):
+?- peano_rbm(P1,P2,R).
+P1 = R,
+P2 = s(0) ;
+false.      % es gäbe eigentlich mehr Lösungen
+
+
+%%%Testanfragen:
+
+%peano_rbm(+,+,+):
+%    prüft, ob das gegebene Peanoprodukt das Produkt der zwei Peanozahlen ist.
+%    Aufgrund des Rekursionsabschlusses darf das zweite Argument keine 0 sein.
+?- peano_rbm(s(s(0)),s(s(s(0))),s(s(s(s(s(s(0))))))).
+true ;
+false.
+?- peano_rbm(0,s(0),0).
+true ;
+false.
+?- peano_rbm(s(0),s(0),s(0)).
+true ;
+false.
+
+%peano_rbm(+,+,-):
+%    ermittelt das Produkt zweier Peanozahlen mithilfe der russischen
+%    Bauernmultiplikation.
+%    Aufgrund des Rekursionsabschlusses darf das zweite Argument keine 0 sein.
+?- peano_rbm(s(s(0)),s(s(s(0))),R).
+R = s(s(s(s(s(s(0)))))) ;
+false.
+
+%Sonder-/Grenzfälle:
+?- peano_rbm(s(0),s(0),R).
+R = s(0) ;
+false.
+?- peano_rbm(0,s(0),R).
+R = 0 ;
+false.
+
+%Negativtest:
+?- peano_rbm(3,s(s(0)),R).
+false.
+?- peano_rbm(s(0),0,R).
+false.                      % aufgrund des Rekursionsabschlusses false
+*/
+
 
 
 %%%Aufgabe 2: 
