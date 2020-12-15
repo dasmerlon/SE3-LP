@@ -241,7 +241,8 @@ halbieren(s(Z),H,R,A) :-    % Rekursionsschritt
 Das Prädikat halbieren(Zahl,HalbeZahl,Rest) ermittelt für HalbeZahl und Rest eine
 Integerzahl. Der Typ der Ausgabe wurde in der Aufgabe nicht festgelegt.
 Wenn man stattdessen nur Peanozahlen als Ergebnis bekommen möchte, kann man 
-das beispielsweise mithilfe des int2peano-Prädikats aus der Vorlesung lösen.
+das beispielsweise mithilfe des int2peano-Prädikats aus der Vorlesung lösen
+oder ganz ohne Integerzahlen (siehe Alternative weiter unten).
 
 Das erste Argument, die Peanozahl, muss instanziiert werden, da es wie bei Aufgabe 
 1.a zu Terminierungsproblemen kommt, wenn man nach weiteren Alternativen fragt, die 
@@ -316,6 +317,91 @@ H = 1, R = 0.
 ?- halbieren(s(s(s(0))),2,1).
 false.
 ?- halbieren(2,H,R).
+false.
+*/
+
+
+%%% Alternativ: Als Ergebnis erhält man wieder Peanozahlen
+% (ohne Verwendung von Integerzahlen, da laut 1.a die Prädikate 
+%  peano2int und int2peano nicht erlaubt sind)
+
+%Hilfsprädiakte even(P) und odd(P) aus der Vorlesung S.166:
+%even(+Peano)
+even(0).
+even(s(P)) :- odd(P).
+
+%odd(+Peano)
+odd(s(P)) :- even(P).
+
+
+%halbieren2(+Zahl,?HalbeZahl,?Rest)
+halbieren2(Z,H,0) :-            % Wrapper für gerade Peanozahlen
+    even(Z),                        % prüfen, ob gerade
+    halbieren2(Z,H,0,0).            % Rest=0
+halbieren2(s(Z),H,s(0)) :-         % Wrapper für ungerade Peanozahlen
+    odd(s(Z)),                      % prüfen, ob ungerade
+    halbieren2(Z,H,s(0),0).         % Rest=1, Z=Z-1
+halbieren2(X,X,0,X).            % Rekursionsabschluss gerade
+halbieren2(X,X,s(0),X).         % Rekursionsabschluss ungerade
+halbieren2(s(Z),H,R,A) :-       % Rekursionsschritt
+    halbieren2(Z,H,R,s(A)).         % rekursiver Aufruf
+
+/*
+Das Prädikat halbieren2(Zahl,HalbeZahl,Rest) ermittelt für HalbeZahl und Rest eine
+Peanozahl. Das Prädikat prüft zu beginn, ob die Peanozahl gerade oder ungerade ist
+und legt somit direkt am Anfang den Rest fest, da x mod 2 bei ungeraden Zahlen immer
+1 und bei geraden Zahlen 0 ist. Im Falle einer ungeraden Peanozahl, wird diese um 1
+abgezogen, damit diese gerade und daher durch 2 teilbar wird. Im Rekursionsschritt
+wird von der Peanozahl rekursiv 1 abgezogen und auf einen Zähler 1 addiert, bis
+die Peanozahl und der Zähler gleich sind, was bedeutet, dass die Hälfte der Peanozahl
+erreicht ist.
+
+Das erste Argument muss aus den gleichen Gründen wie in der 1. Variante instanziiert 
+werden. Da keine Terminierungssicherheit garantiert werden kann, kann man mit diesem
+Prädikat auch keine Peanozahl verdoppeln, obwohl dies in der Theorie bei der ersten
+Variablenbindung funktioniert. cut/0 wäre keine Lösung, da dann beispielsweise 
+die Instanziierung (-,-,-) nur noch das erste Ergebnis ausgeben würde und nicht
+alle Möglichen.
+
+%%%Testanfragen:
+
+%halbieren(+,+,+): 
+%    prüft, ob die Peanozahl, der Quotient und der Rest übereinstimmen.
+?- halbieren2(s(s(s(0))),s(0),s(0)).
+true ;
+false.
+
+%halbieren(+,+,-): 
+%    ermittelt den Rest einer gegebenen Peanozahl und gegebenen Quotienten.
+?- halbieren2(s(s(s(s(s(0))))),s(s(0)),R).
+R = s(0) ;
+false.
+
+%halbieren(+,-,+): 
+%    ermittelt den Quotienten einer gegebenen Peanozahl und gegebenen Rest.
+?- halbieren2(s(s(s(s(s(0))))),H,s(0)).
+H = s(s(0)) ;
+false.
+
+%halbieren(+,-,-): 
+%    ermittelt den Quotienten und den Rest einer Peanozahl als Integerzahl.
+?- halbieren2(s(s(s(s(s(0))))),H,R).
+H = s(s(0)), R = s(0) ;
+false.
+
+%Spezial-/Grenzfälle:
+?- halbieren2(0,H,R).
+H = R, R = 0.
+?- halbieren2(s(0),H,R).
+H = 0, R = s(0).
+?- halbieren2(s(s(0)),H,R).
+H = s(0), R = 0 ;
+false.
+
+%Negativtest:
+?- halbieren2(s(s(s(0))),s(s(0)),s(0)).
+false.
+?- halbieren2(2,H,R).
 false.
 */
 
